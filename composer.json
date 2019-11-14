@@ -24,17 +24,6 @@
         "illuminate/support" : ">=6.0",
         "doctrine/inflector" : ">=1.0"
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Floor9design\\LaravelRestfulApi\\Traits\\ApiFilterTrait",
-                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonTrait",
-                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonDefaultTrait",
-                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJson501Trait",
-                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonInterface"
-            ]
-        }
-    },
     "autoload": {
         "psr-4": {
             "floor9design\\laravel-restful-api\\": "src"

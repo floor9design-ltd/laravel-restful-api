@@ -18,7 +18,7 @@
  *
  */
 
-namespace App\Traits;
+namespace Floor9design\LaravelRestfulApi\Traits;
 
 use Doctrine\Common\Inflector\Inflector;
 use Illuminate\Http\JsonResponse;

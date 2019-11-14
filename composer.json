@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "floor9design\\laravel-restful-api\\": "src"
+            "Floor9design\\LaravelRestfulApi\\": "src"
         }
     },
     "config": {

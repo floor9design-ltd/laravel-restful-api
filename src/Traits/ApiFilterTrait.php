@@ -18,7 +18,7 @@
  *
  */
 
-namespace App\Traits;
+namespace Floor9design\LaravelRestfulApi\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;

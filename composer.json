@@ -27,11 +27,11 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Floor9design\\LaravelRestfulApi\\ApiFilterTrait",
-                "Floor9design\\LaravelRestfulApi\\ApiJsonTrait",
-                "Floor9design\\LaravelRestfulApi\\ApiJsonDefaultTrait",
-                "Floor9design\\LaravelRestfulApi\\ApiJson501Trait",
-                "Floor9design\\LaravelRestfulApi\\ApiJsonInterface"
+                "Floor9design\\LaravelRestfulApi\\Traits\\ApiFilterTrait",
+                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonTrait",
+                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonDefaultTrait",
+                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJson501Trait",
+                "Floor9design\\LaravelRestfulApi\\Traits\\ApiJsonInterface"
             ]
         }
     },

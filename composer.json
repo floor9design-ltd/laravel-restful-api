@@ -1,0 +1,35 @@
+{
+    "name": "floor9design/laravel-restful-api",
+    "type": "library",
+    "description": "A set of restful API classes that offer strict RESTful methods for laravel",
+    "keywords": [
+        "floor9design",
+        "laravel",
+        "rest",
+        "api"
+    ],
+    "homepage": "https://github.com/elb98rm/laravel-restful-api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rick Morice",
+            "email": "rick@floor9design.com",
+            "homepage": "http://floor9design.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=7.0",
+        "illuminate/http" : ">=6.0",
+        "illuminate/support" : ">=6.0",
+        "doctrine/inflector" : ">=1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "floor9design\\laravel-restful-api\\": "src"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

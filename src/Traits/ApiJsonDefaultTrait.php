@@ -4,16 +4,15 @@
  *
  * ApiJsonDefaultTrait trait
  *
- * php 7.4+
+ * php 7.0+
  *
  * @category  None
- * @package   App\Traits
+ * @package   Floor9design\LaravelRestfulApi\Traits
  * @author    Rick Morice <rick@floor9design.com>
- * @copyright Intrica Ltd
- * @license   Private software
+ * @copyright Floor9design Ltd
+ * @license   MIT
  * @version   1.0
- * @link      https://www.intrica.net/
- * @link      https://www.smartsearchsecure.com/
+ * @link      https://www.floor9design.com
  * @version   1.0
  * @since     File available since Release 1.0
  *
@@ -38,13 +37,13 @@ use Illuminate\Support\Facades\Validator;
  * methods provide useful feedback for any interaction in the meantime.
  *
  * @category  None
- * @package   App\Traits
+ * @package   Floor9design\LaravelRestfulApi\Traits
  * @author    Rick Morice <rick@floor9design.com>
- * @copyright Intrica Ltd
- * @license   Private software
+ * @copyright Floor9design Ltd
+ * @license   MIT
  * @version   1.0
- * @link      https://www.intrica.net/
- * @link      https://www.smartsearchsecure.com/
+ * @link      https://www.floor9design.com
+ * @link      https://laravel.com/
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */

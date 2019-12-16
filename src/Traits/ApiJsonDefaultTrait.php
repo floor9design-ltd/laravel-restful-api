@@ -85,8 +85,8 @@ trait ApiJsonDefaultTrait
             $response['http_response_code'] = '200';
 
             $response['links'] = [
-                'collection' =>  route('json.' . $this->model->getTable() . '.index'),
-                'self' =>  route('json.' . $this->model->getTable() . '.details', $id)
+                'collection' => route('json.' . $this->model->getTable() . '.index'),
+                'self' => route('json.' . $this->model->getTable() . '.details', $id)
             ];
 
             $response['data'] = [

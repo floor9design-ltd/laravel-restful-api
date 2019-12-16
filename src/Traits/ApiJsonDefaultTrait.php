@@ -71,23 +71,39 @@ trait ApiJsonDefaultTrait
      */
     public function jsonIndex(Request $request): JsonResponse
     {
+        $object = $this->controller_model::find($id ?? 0);
 
-        $objects = $this->controller_model::paginate($this->maximum_response_number);
+        if (!$object) {
+            $response['http_response_code'] = '404';
 
-        $response['http_response_code'] = '200';
-        $response[$this->model->getTable()] = [];
+            $response['errors'] = [
+                $response['status'] = '404',
+                $response['title'] = 'Resource could not found',
+                $response['detail'] = 'The ' . $this->model->getTable() . ' could not be found.'
+            ];
+        } else {
+            $response['http_response_code'] = '200';
 
-        foreach ($objects as $object) {
-            $response[$this->model->getTable()][] = $object->getApiFilter($object);
+            $response['links'] = [
+                'collection' =>  route('json.' . $this->model->getTable() . '.index'),
+                'self' =>  route('json.' . $this->model->getTable() . '.details', $id)
+            ];
+
+            $response['data'] = [
+                'id' => $id,
+                'type' => $this->model->getTable(),
+                'attributes' => $object->getApiFilter($object)
+            ];
+
+            $response['relationships'] = [];
         }
 
         return Response::json($response, $response['http_response_code']);
-
     }
 
     /**
      * The json version of the detail screen
-     * "Retrieve a representation of the usered member of the collection"
+     * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
      * @param int $id Object id

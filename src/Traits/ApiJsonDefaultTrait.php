@@ -60,6 +60,22 @@ trait ApiJsonDefaultTrait
      */
     protected $controller_model;
 
+    /**
+     * A clean array to populate, including the main required elements
+     *
+     * @var array
+     */
+    protected $json_api_response_array = [
+        'data' => [
+            'type' => null,
+            'id' =>  null,
+        ],
+        'errors' => [],
+        'meta' => [
+            'status' => null
+        ]
+    ];
+
     // GET
 
     /**
@@ -71,34 +87,27 @@ trait ApiJsonDefaultTrait
      */
     public function jsonIndex(Request $request): JsonResponse
     {
-        $object = $this->controller_model::find($id ?? 0);
+        $objects = $this->controller_model::paginate($this->maximum_response_number);
 
-        if (!$object) {
-            $response['http_response_code'] = '404';
+        $this->json_api_response_array['status'] = '200';
 
-            $response['errors'] = [
-                $response['status'] = '404',
-                $response['title'] = 'Resource could not found',
-                $response['detail'] = 'The ' . $this->model->getTable() . ' could not be found.'
-            ];
-        } else {
-            $response['http_response_code'] = '200';
+        foreach($objects as $object) {
 
-            $response['links'] = [
-                'collection' => route('json.' . $this->model->getTable() . '.index'),
-                'self' => route('json.' . $this->model->getTable() . '.details', $id)
+            $this->json_api_response_array['links'] = [
+                'self' => route('json.' . $this->model->getTable() . '.index')
             ];
 
-            $response['data'] = [
-                'id' => $id,
+            $this->json_api_response_array['data'] = [
+                'id' => $object->id,
                 'type' => $this->model->getTable(),
                 'attributes' => $object->getApiFilter($object)
             ];
 
-            $response['relationships'] = [];
+            $this->json_api_response_array['relationships'] = [];
+
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
 
     /**
@@ -112,16 +121,37 @@ trait ApiJsonDefaultTrait
     public function jsonDetails(Request $request, int $id): JsonResponse
     {
         $object = $this->controller_model::find($id ?? 0);
+        $status = null;
 
         if (!$object) {
-            $response['http_response_code'] = '404';
-            $response['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
+            $this->json_api_response_array['errors'] = [
+                'status' => '404',
+                'title' => 'Resource could not found',
+                'detail' => 'The ' . $this->model->getTable() . ' could not be found.'
+            ];
+
+            $status = $this->json_api_response_array['errors']['errors'];
+
         } else {
-            $response['http_response_code'] = '200';
-            $response[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['meta']['status'] = '200';
+
+            $this->json_api_response_array['links'] = [
+                'collection' => route('json.' . $this->model->getTable() . '.index'),
+                'self' => route('json.' . $this->model->getTable() . '.details', $object->id)
+            ];
+
+            $this->json_api_response_array['data'] = [
+                'id' => $object->id,
+                'type' => $this->model->getTable(),
+                'attributes' => $object->getApiFilter($object)
+            ];
+
+            $this->json_api_response_array['relationships'] = [];
+
+            $status = $this->json_api_response_array['meta']['status'];
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $status);
     }
 
     // CREATE
@@ -140,18 +170,18 @@ trait ApiJsonDefaultTrait
             $this->controller_model::getValidation()
         );
         if ($validator->fails()) {
-            $response['http_response_code'] = '422';
-            $response['detail'] = 'Input validation has failed.';
-            $response['validator_errors'] = $validator->errors();
+            $this->json_api_response_array['status'] = '422';
+            $this->json_api_response_array['detail'] = 'Input validation has failed.';
+            $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
             $object = new $this->controller_model($request->all());
             $object->save();
-            $response['http_response_code'] = '201';
-            $response['detail'] = 'The ' . $this->model->getTable() . ' was created.';
-            $response[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['status'] = '201';
+            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was created.';
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
 
     // jsonCreateById
@@ -183,9 +213,9 @@ trait ApiJsonDefaultTrait
         );
 
         if ($validator->fails()) {
-            $response['http_response_code'] = '422';
-            $response['detail'] = 'Input validation has failed.';
-            $response['validator_errors'] = $validator->errors();
+            $this->json_api_response_array['status'] = '422';
+            $this->json_api_response_array['detail'] = 'Input validation has failed.';
+            $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
             // Clear old object
             $old = $this->controller_model::find($id);
@@ -193,12 +223,12 @@ trait ApiJsonDefaultTrait
             // Write replacement
             $object->fill($filtered);
             $object->save();
-            $response['http_response_code'] = '200';
-            $response['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
-            $response[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['status'] = '200';
+            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
 
     // PATCH
@@ -228,20 +258,20 @@ trait ApiJsonDefaultTrait
         );
 
         if ($validator->fails()) {
-            $response['http_response_code'] = '422';
-            $response['detail'] = 'Input validation has failed.';
-            $response['validator_errors'] = $validator->errors();
+            $this->json_api_response_array['status'] = '422';
+            $this->json_api_response_array['detail'] = 'Input validation has failed.';
+            $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
             $object = $this->controller_model::find($id);
 
             $object->fill($filtered);
             $object->save();
-            $response['http_response_code'] = '200';
-            $response['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
-            $response[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['status'] = '200';
+            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
 
     // DELETE
@@ -260,17 +290,17 @@ trait ApiJsonDefaultTrait
         $object = $this->controller_model::find($id ?? 0);
 
         if (!$object) {
-            $response['http_response_code'] = '404';
-            $response['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
+            $this->json_api_response_array['status'] = '404';
+            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
         } else {
 
             $object->delete();
 
-            $response['http_response_code'] = '200';
-            $response['detail'] = 'The ' . $this->model->getTable() . ' was deleted.';
+            $this->json_api_response_array['status'] = '200';
+            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was deleted.';
         }
 
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
 
 }

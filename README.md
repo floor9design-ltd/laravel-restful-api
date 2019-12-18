@@ -31,7 +31,7 @@ Tests under development and will be pushed shortly.
 
 ## Credits
 
-- [Rick morice](https://github.com/elb98rm)
+- [Rick](https://github.com/elb98rm)
 
 ## License
 

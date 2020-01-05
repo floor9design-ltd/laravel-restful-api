@@ -93,8 +93,6 @@ trait ApiJsonDefaultTrait
 
         $this->json_api_response_array['meta']['status'] = 200;
 
-        //var_dump($objects->nextPageUrl());
-
         $this->json_api_response_array['links'] = [
             'collection' => $this->url_base,
             'self' => $this->url_base . '?page=' . $objects->currentPage(),
@@ -104,12 +102,13 @@ trait ApiJsonDefaultTrait
             'next' => null
         ];
 
-        if($objects->nextPageUrl()) {
-            $this->json_api_response_array['links']['next'] = $this->url_base . $objects->nextPageUrl();
+
+        if ($objects->nextPageUrl()) {
+            $this->json_api_response_array['links']['next'] = $objects->nextPageUrl();
         }
 
-        if($objects->previousPageUrl()) {
-            $this->json_api_response_array['links']['prev'] = $this->url_base . $objects->previousPageUrl();
+        if ($objects->previousPageUrl()) {
+            $this->json_api_response_array['links']['prev'] = $objects->previousPageUrl();
         }
 
         foreach ($objects as $object) {
@@ -123,8 +122,6 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['relationships'] = [];
 
         }
-
-        var_dump($this->json_api_response_array['links']['next'], $this->url_base); exit;
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['meta']['status']);
     }

@@ -27,7 +27,15 @@ offers classes to deliver a true REST implementation that matches the wikipedia 
 
 ## Testing
 
-Tests under development and will be pushed shortly.
+Tests under development and are underway.
+
+To run the existing tests: 
+
+* `./vendor/phpunit/phpunit/phpunit`
+
+Documentation and coverage can be generated as follows:
+
+* `./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/`
 
 ## Credits
 

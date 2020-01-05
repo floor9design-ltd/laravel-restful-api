@@ -48,6 +48,23 @@ use Illuminate\Support\Facades\Response;
 trait ApiJson501Trait
 {
 
+    /**
+     * A clean array to populate, including the main required elements
+     *
+     * @var array
+     */
+    protected $response = [
+        'data' => [],
+        'errors' => [
+            'status' => '501',
+            'title' => 'Not Implemented',
+            'detail' => 'This feature is not yet implemented.',
+        ],
+        'meta' => [
+            'status' => null
+        ]
+    ];
+
     // GET
 
     /**
@@ -59,9 +76,7 @@ trait ApiJson501Trait
      */
     public function jsonIndex(Request $request): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     /**
@@ -74,9 +89,7 @@ trait ApiJson501Trait
      */
     public function jsonDetails(Request $request, int $id): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     // POST
@@ -90,9 +103,7 @@ trait ApiJson501Trait
      */
     public function jsonCreate(Request $request): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     /**
@@ -105,9 +116,7 @@ trait ApiJson501Trait
      */
     public function jsonCreateById(Request $request, int $id): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     // PUT
@@ -120,9 +129,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionReplace(): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     /**
@@ -135,9 +142,7 @@ trait ApiJson501Trait
      */
     public function jsonElementReplace(Request $request, int $id): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     // PATCH
@@ -150,9 +155,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionUpdate(): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     /**
@@ -165,9 +168,7 @@ trait ApiJson501Trait
      */
     public function jsonElementUpdate(Request $request, int $id): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     // DELETE
@@ -181,9 +182,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionDelete(Request $request): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
     /**
@@ -195,9 +194,7 @@ trait ApiJson501Trait
      */
     public function jsonElementDelete(Request $request, int $id): JsonResponse
     {
-        $response['http_response_code'] = '501';
-        $response['detail'] = 'This feature is not yet implemented.';
-        return Response::json($response, $response['http_response_code']);
+        return Response::json($this->response, $this->response['errors']['status']);
     }
 
 }

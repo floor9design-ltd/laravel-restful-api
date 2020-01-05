@@ -3,3 +3,6 @@
 
 # Vendor
 vendor
+
+# Testing
+docs/tests/*

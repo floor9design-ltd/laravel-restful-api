@@ -39,8 +39,42 @@ namespace Floor9design\LaravelRestfulApi\Traits;
 trait ApiJsonTrait
 {
     /**
+     * A clean array to populate, including the main required elements
+     *
+     * @var array
+     */
+    protected $json_api_response_array = [
+        'data' => [],
+        'errors' => [],
+        'meta' => [
+            'status' => null
+        ]
+    ];
+
+    /**
      * @var int Maximum number of responses that the api will give if pagination is set up
      */
-    var $maximum_response_number = 200;
+    protected $maximum_response_number = 200;
+
+    /**
+     * @return array
+     * @see $json_api_response_array
+     *
+     */
+    public function getJsonApiResponseArray(): array
+    {
+        return $this->json_api_response_array;
+    }
+
+    /**
+     * @return int
+     * @see $maximum_response_number
+     *
+     */
+    public function getMaximumResponseNumber(): int
+    {
+        return $this->maximum_response_number;
+    }
+
 
 }

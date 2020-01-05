@@ -61,15 +61,17 @@ trait ApiJsonDefaultTrait
     protected $controller_model;
 
     /**
+     * @var string the base url for the model; this should ideally be overwritten
+     */
+    protected $url_base = '/';
+
+    /**
      * A clean array to populate, including the main required elements
      *
      * @var array
      */
     protected $json_api_response_array = [
-        'data' => [
-            'type' => null,
-            'id' =>  null,
-        ],
+        'data' => [],
         'errors' => [],
         'meta' => [
             'status' => null
@@ -89,15 +91,30 @@ trait ApiJsonDefaultTrait
     {
         $objects = $this->controller_model::paginate($this->maximum_response_number);
 
-        $this->json_api_response_array['status'] = '200';
+        $this->json_api_response_array['meta']['status'] = 200;
 
-        foreach($objects as $object) {
+        //var_dump($objects->nextPageUrl());
 
-            $this->json_api_response_array['links'] = [
-                'self' => route('json.' . $this->model->getTable() . '.index')
-            ];
+        $this->json_api_response_array['links'] = [
+            'collection' => $this->url_base,
+            'self' => $this->url_base . '?page=' . $objects->currentPage(),
+            'first' => $this->url_base . '?page=1',
+            'last' => $this->url_base . '?page=' . $objects->lastPage(),
+            'prev' => null,
+            'next' => null
+        ];
 
-            $this->json_api_response_array['data'] = [
+        if($objects->nextPageUrl()) {
+            $this->json_api_response_array['links']['next'] = $this->url_base . $objects->nextPageUrl();
+        }
+
+        if($objects->previousPageUrl()) {
+            $this->json_api_response_array['links']['prev'] = $this->url_base . $objects->previousPageUrl();
+        }
+
+        foreach ($objects as $object) {
+
+            $this->json_api_response_array['data'][$object->id] = [
                 'id' => $object->id,
                 'type' => $this->model->getTable(),
                 'attributes' => $object->getApiFilter($object)
@@ -107,7 +124,9 @@ trait ApiJsonDefaultTrait
 
         }
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+        var_dump($this->json_api_response_array['links']['next'], $this->url_base); exit;
+
+        return Response::json($this->json_api_response_array, $this->json_api_response_array['meta']['status']);
     }
 
     /**
@@ -124,20 +143,23 @@ trait ApiJsonDefaultTrait
         $status = null;
 
         if (!$object) {
+
             $this->json_api_response_array['errors'] = [
                 'status' => '404',
                 'title' => 'Resource could not found',
-                'detail' => 'The ' . $this->model->getTable() . ' could not be found.'
+                'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
             ];
 
-            $status = $this->json_api_response_array['errors']['errors'];
+            $status = $this->json_api_response_array['errors']['status'];
 
         } else {
-            $this->json_api_response_array['meta']['status'] = '200';
+
+            $this->json_api_response_array['meta']['status'] = 200;
+            $this->json_api_response_array['meta']['count'] = 1;
 
             $this->json_api_response_array['links'] = [
-                'collection' => route('json.' . $this->model->getTable() . '.index'),
-                'self' => route('json.' . $this->model->getTable() . '.details', $object->id)
+                'collection' => $this->url_base,
+                'self' => $this->url_base . '/' . $object->id
             ];
 
             $this->json_api_response_array['data'] = [
@@ -149,6 +171,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['relationships'] = [];
 
             $status = $this->json_api_response_array['meta']['status'];
+
         }
 
         return Response::json($this->json_api_response_array, $status);

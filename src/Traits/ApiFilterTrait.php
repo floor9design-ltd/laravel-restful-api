@@ -53,9 +53,8 @@ trait ApiFilterTrait
         $return = [];
 
         foreach ($this->api_array_filter ?? [] as $property) {
-
             // if the object has "json" in it, automatically decode (to fix layout issues when it's re-encoded)
-            if(Str::contains($property, 'json')) {
+            if (Str::contains($property, 'json')) {
                 $return[$property] = json_decode($model->$property);
             } else {
                 $return[$property] = $model->$property;

@@ -6,3 +6,4 @@ vendor
 
 # Testing
 docs/tests/*
+/.phpunit.result.cache

@@ -21,8 +21,6 @@
 namespace Floor9design\LaravelRestfulApi\Models;
 
 use Floor9design\LaravelRestfulApi\Traits\ApiFilterTrait;
-use Floor9design\LaravelRestfulApi\Traits\ApiJsonTrait;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 

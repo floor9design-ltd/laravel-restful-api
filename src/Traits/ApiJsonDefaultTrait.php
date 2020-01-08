@@ -112,7 +112,6 @@ trait ApiJsonDefaultTrait
         }
 
         foreach ($objects as $object) {
-
             $this->json_api_response_array['data'][$object->id] = [
                 'id' => $object->id,
                 'type' => $this->model->getTable(),
@@ -120,7 +119,6 @@ trait ApiJsonDefaultTrait
             ];
 
             $this->json_api_response_array['relationships'] = [];
-
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['meta']['status']);
@@ -140,7 +138,6 @@ trait ApiJsonDefaultTrait
         $status = null;
 
         if (!$object) {
-
             $this->json_api_response_array['errors'] = [
                 'status' => '404',
                 'title' => 'Resource could not found',
@@ -148,9 +145,7 @@ trait ApiJsonDefaultTrait
             ];
 
             $status = $this->json_api_response_array['errors']['status'];
-
         } else {
-
             $this->json_api_response_array['meta']['status'] = 200;
             $this->json_api_response_array['meta']['count'] = 1;
 
@@ -168,7 +163,6 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['relationships'] = [];
 
             $status = $this->json_api_response_array['meta']['status'];
-
         }
 
         return Response::json($this->json_api_response_array, $status);
@@ -198,7 +192,9 @@ trait ApiJsonDefaultTrait
             $object->save();
             $this->json_api_response_array['status'] = '201';
             $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was created.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
+                $object
+            );
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
@@ -244,8 +240,12 @@ trait ApiJsonDefaultTrait
             $object->fill($filtered);
             $object->save();
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
+                    $this->model->getTable()
+                ) . ' was replaced.';
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
+                $object
+            );
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
@@ -287,8 +287,12 @@ trait ApiJsonDefaultTrait
             $object->fill($filtered);
             $object->save();
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize($this->model->getTable()) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter($object);
+            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
+                    $this->model->getTable()
+                ) . ' was replaced.';
+            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
+                $object
+            );
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
@@ -313,7 +317,6 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['status'] = '404';
             $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
         } else {
-
             $object->delete();
 
             $this->json_api_response_array['status'] = '200';

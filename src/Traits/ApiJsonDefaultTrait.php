@@ -25,6 +25,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 /**
  * Trait ApiJsonDefaultTrait
@@ -179,20 +180,26 @@ trait ApiJsonDefaultTrait
      */
     public function jsonCreate(Request $request): JsonResponse
     {
+        // laravel parse the request into an array: reset this to be json where valid array (move this into a private function later)
+        $reencoded_array = $this->extractJsonApiAttributes($request->all());
+
         $validator = Validator::make(
-            $request->all(),
+            $reencoded_array,
             $this->controller_model::getValidation()
         );
+
         if ($validator->fails()) {
             $this->json_api_response_array['status'] = '422';
             $this->json_api_response_array['detail'] = 'Input validation has failed.';
             $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
-            $object = new $this->controller_model($request->all());
+            $single_object_name = Inflector::singularize($this->model->getTable());
+
+            $object = new $this->controller_model($reencoded_array);
             $object->save();
             $this->json_api_response_array['status'] = '201';
-            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was created.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
+            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was created.';
+            $this->json_api_response_array[$single_object_name] = $object->getApiFilter(
                 $object
             );
         }
@@ -324,6 +331,30 @@ trait ApiJsonDefaultTrait
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+    }
+
+    /**
+     * Parses an input array in the form of a JSON API request, returning thr attributes key.
+     * Also prepares json fields for database writing
+     *
+     * @param array $array
+     * @return Array
+     */
+    public function extractJsonApiAttributes(Array $array): Array
+    {
+        $reencoded_array = [];
+
+        if ($array['data']['attributes'] ?? 0) {
+            foreach ($array['data']['attributes'] as $key => $value) {
+                if (Str::contains($key, 'json')) {
+                    $reencoded_array[$key] = json_encode($value);
+                } else {
+                    $reencoded_array[$key] = $value;
+                }
+            }
+        }
+
+        return $reencoded_array;
     }
 
 }

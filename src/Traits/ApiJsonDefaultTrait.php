@@ -144,24 +144,25 @@ trait ApiJsonDefaultTrait
                 'title' => 'Resource could not found',
                 'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
             ];
+            unset($this->json_api_response_array['data']);
 
             $status = $this->json_api_response_array['errors']['status'];
         } else {
             $this->json_api_response_array['meta']['status'] = 200;
             $this->json_api_response_array['meta']['count'] = 1;
 
-            $this->json_api_response_array['links'] = [
-                'collection' => $this->url_base,
-                'self' => $this->url_base . '/' . $object->id
-            ];
+            unset($this->json_api_response_array['errors']);
+
+            $this->json_api_response_array['links'] = ['collection' => $this->url_base];
 
             $this->json_api_response_array['data'] = [
-                'id' => $object->id,
+                'id' => (string)$object->id,
                 'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object)
+                'attributes' => $object->getApiFilter($object),
+                'links' => ['self' => $this->url_base . '/' . $object->id]
             ];
 
-            $this->json_api_response_array['relationships'] = [];
+            $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'];
         }
@@ -181,10 +182,10 @@ trait ApiJsonDefaultTrait
     public function jsonCreate(Request $request): JsonResponse
     {
         // laravel parse the request into an array: reset this to be json where valid array (move this into a private function later)
-        $reencoded_array = $this->extractJsonApiAttributes($request->all());
+        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
 
         $validator = Validator::make(
-            $reencoded_array,
+            $re_encoded_array,
             $this->controller_model::getValidation()
         );
 
@@ -195,7 +196,7 @@ trait ApiJsonDefaultTrait
         } else {
             $single_object_name = Inflector::singularize($this->model->getTable());
 
-            $object = new $this->controller_model($reencoded_array);
+            $object = new $this->controller_model($re_encoded_array);
             $object->save();
             $this->json_api_response_array['status'] = '201';
             $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was created.';
@@ -338,23 +339,23 @@ trait ApiJsonDefaultTrait
      * Also prepares json fields for database writing
      *
      * @param array $array
-     * @return Array
+     * @return array
      */
-    public function extractJsonApiAttributes(Array $array): Array
+    public function extractJsonApiAttributes(array $array): Array
     {
-        $reencoded_array = [];
+        $re_encoded_array = [];
 
         if ($array['data']['attributes'] ?? 0) {
             foreach ($array['data']['attributes'] as $key => $value) {
                 if (Str::contains($key, 'json')) {
-                    $reencoded_array[$key] = json_encode($value);
+                    $re_encoded_array[$key] = json_encode($value);
                 } else {
-                    $reencoded_array[$key] = $value;
+                    $re_encoded_array[$key] = $value;
                 }
             }
         }
 
-        return $reencoded_array;
+        return $re_encoded_array;
     }
 
 }

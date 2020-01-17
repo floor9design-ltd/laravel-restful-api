@@ -54,14 +54,17 @@ trait ApiJson501Trait
      * @var array
      */
     protected $response = [
-        'data' => [],
         'errors' => [
+            [
+                'status' => '501',
+                'title' => 'Not Implemented',
+                'detail' => 'This feature is not yet implemented.',
+            ]
+        ],
+        'meta' => [
             'status' => '501',
             'title' => 'Not Implemented',
             'detail' => 'This feature is not yet implemented.',
-        ],
-        'meta' => [
-            'status' => null
         ]
     ];
 
@@ -76,7 +79,7 @@ trait ApiJson501Trait
      */
     public function jsonIndex(Request $request): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**

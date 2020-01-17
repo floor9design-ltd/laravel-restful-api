@@ -30,7 +30,8 @@
         "phpunit/phpunit": ">=8.0",
         "mockery/mockery": "dev-master",
         "orchestra/testbench": "^4.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "phpdocumentor/phpdocumentor": "2.*"
     },
     "autoload": {
         "psr-4": {

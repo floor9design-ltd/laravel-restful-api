@@ -103,7 +103,6 @@ trait ApiJsonDefaultTrait
             'next' => null
         ];
 
-
         if ($objects->nextPageUrl()) {
             $this->json_api_response_array['links']['next'] = $objects->nextPageUrl();
         }
@@ -140,15 +139,17 @@ trait ApiJsonDefaultTrait
 
         if (!$object) {
             $this->json_api_response_array['errors'] = [
-                'status' => '404',
-                'title' => 'Resource could not found',
-                'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
+                [
+                    'status' => '404',
+                    'title' => 'Resource could not found',
+                    'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
+                ]
             ];
             unset($this->json_api_response_array['data']);
 
-            $status = $this->json_api_response_array['errors']['status'];
+            $status = $this->json_api_response_array['errors'][0]['status'];
         } else {
-            $this->json_api_response_array['meta']['status'] = 200;
+            $this->json_api_response_array['meta']['status'] = '200';
             $this->json_api_response_array['meta']['count'] = 1;
 
             unset($this->json_api_response_array['errors']);

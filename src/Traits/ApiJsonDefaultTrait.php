@@ -149,6 +149,7 @@ trait ApiJsonDefaultTrait
                     'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
                 ]
             ];
+            unset($this->json_api_response_array['meta']);
             unset($this->json_api_response_array['data']);
 
             $status = $this->json_api_response_array['errors'][0]['status'];

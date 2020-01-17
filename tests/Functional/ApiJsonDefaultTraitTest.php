@@ -78,13 +78,17 @@ class ApiJsonDefaultTraitTest extends TestCase
 
         $i = 1;
         while ($i <= 200) {
-            $users[$i] = [
-                'id' => $i,
+            $users[] = [
+                'id' => (string)$i,
                 'type' => 'users',
                 'attributes' => [
                     'name' => 'Rick',
                     'email' => 'rick@floor9design.com'
-                ]
+                ],
+                'links' => [
+                    'self' => 'https://laravel-restful-api.local/users/' . $i
+                ],
+                'relationships' => new \stdClass(),
             ];
             $i++;
         }
@@ -93,9 +97,9 @@ class ApiJsonDefaultTraitTest extends TestCase
         $api_user_response = json_encode(
             [
                 'data' => $users,
-                'errors' => [],
                 'meta' => [
-                    'status' => 200
+                    'status' => "200",
+                    'count' => 200
                 ],
                 'links' => [
                     'collection' => 'https://laravel-restful-api.local/users',
@@ -105,8 +109,7 @@ class ApiJsonDefaultTraitTest extends TestCase
                     "prev" => null,
                     // Note: as it's mocked, Users::path is not set, so it returns a "/". This works and is tested in reality.
                     "next" => "/?page=2"
-                ],
-                'relationships' => []
+                ]
             ]
         );
 
@@ -140,14 +143,12 @@ class ApiJsonDefaultTraitTest extends TestCase
         // empty response:
         $api_404_response = json_encode(
             [
-                'data' => [],
                 'errors' => [
-                    'status' => '404',
-                    'title' => 'Resource could not found',
-                    'detail' => 'The user could not be found.'
-                ],
-                'meta' => [
-                    'status' => null
+                    [
+                        'status' => '404',
+                        'title' => 'Resource could not found',
+                        'detail' => 'The user could not be found.'
+                    ]
                 ]
             ]
         );
@@ -155,7 +156,6 @@ class ApiJsonDefaultTraitTest extends TestCase
         // 404
         $response_404 = $test_controller->jsonDetails($request_404, 0);
         $this->assertEquals($api_404_response, $response_404->getContent());
-
     }
 
     /**
@@ -165,7 +165,6 @@ class ApiJsonDefaultTraitTest extends TestCase
      */
     public function testJsonDetailsUser()
     {
-
         // Set up a mock trait in a class
         $test_controller = new class {
             use ApiJsonDefaultTrait;
@@ -185,29 +184,29 @@ class ApiJsonDefaultTraitTest extends TestCase
         $api_user_response = json_encode(
             [
                 'data' => [
-                    'id' => 1,
+                    'id' => "1",
                     'type' => 'users',
                     'attributes' => [
                         'name' => 'Rick',
                         'email' => 'rick@floor9design.com'
-                    ]
+                    ],
+                    'links' => [
+                        'self' => 'https://laravel-restful-api.local/users/1'
+                    ],
+                    'relationships' => new \stdClass(),
                 ],
-                'errors' => [],
                 'meta' => [
-                    'status' => 200,
+                    'status' => "200",
                     'count' => 1
                 ],
                 'links' => [
-                    'collection' => 'https://laravel-restful-api.local/users',
-                    'self' => 'https://laravel-restful-api.local/users/1'
-                ],
-                'relationships' => []
+                    'collection' => 'https://laravel-restful-api.local/users'
+                ]
             ]
         );
 
         $user_response = $test_controller->jsonDetails($request_user, 1);
         $this->assertEquals($api_user_response, $user_response->getContent());
-
     }
 
 }

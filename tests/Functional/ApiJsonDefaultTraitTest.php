@@ -48,6 +48,8 @@ use Orchestra\Testbench\TestCase;
 class ApiJsonDefaultTraitTest extends TestCase
 {
 
+    // GET
+
     //jsonIndex
 
     /**
@@ -117,6 +119,8 @@ class ApiJsonDefaultTraitTest extends TestCase
         $this->assertEquals($api_user_response, $user_response->getContent());
 
     }
+
+    // jsonDetails
 
     /**
      * Test ApiJsonDefaultTrait:JsonDetails.
@@ -207,6 +211,31 @@ class ApiJsonDefaultTraitTest extends TestCase
 
         $user_response = $test_controller->jsonDetails($request_user, 1);
         $this->assertEquals($api_user_response, $user_response->getContent());
+
+        // Note: this only tests page1, but there's no real need to check if laravel pagination works... it does!
     }
 
+    // CREATE
+
+    // jsonCreate
+
+    // jsonCreateById
+
+    // PUT
+
+    // jsonCollectionReplace
+
+    // jsonElementReplace
+
+    // PATCH
+
+    // jsonCollectionUpdate
+
+    // jsonElementUpdate
+
+    // DELETE
+
+    // jsonCollectionDelete
+
+    // jsonElementDelete
 }

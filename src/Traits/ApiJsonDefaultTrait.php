@@ -92,7 +92,11 @@ trait ApiJsonDefaultTrait
     {
         $objects = $this->controller_model::paginate($this->maximum_response_number);
 
-        $this->json_api_response_array['meta']['status'] = 200;
+        // This always returns 200 if it's got this far... an empty response set is still "OK".
+        $this->json_api_response_array['meta']['status'] = "200";
+        $this->json_api_response_array['meta']['count'] = $objects->count();
+
+        unset($this->json_api_response_array['errors']);
 
         $this->json_api_response_array['links'] = [
             'collection' => $this->url_base,
@@ -112,13 +116,13 @@ trait ApiJsonDefaultTrait
         }
 
         foreach ($objects as $object) {
-            $this->json_api_response_array['data'][$object->id] = [
-                'id' => $object->id,
+            $this->json_api_response_array['data'][] = [
+                'id' => (string)$object->id,
                 'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object)
+                'attributes' => $object->getApiFilter($object),
+                'links' => ['self' => $this->url_base . '/' . $object->id],
+                'relationships' => new \stdClass()
             ];
-
-            $this->json_api_response_array['relationships'] = [];
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['meta']['status']);

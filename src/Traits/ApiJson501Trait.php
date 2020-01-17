@@ -92,7 +92,7 @@ trait ApiJson501Trait
      */
     public function jsonDetails(Request $request, int $id): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     // POST
@@ -106,7 +106,7 @@ trait ApiJson501Trait
      */
     public function jsonCreate(Request $request): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
@@ -119,7 +119,7 @@ trait ApiJson501Trait
      */
     public function jsonCreateById(Request $request, int $id): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     // PUT
@@ -132,7 +132,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionReplace(): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
@@ -145,7 +145,7 @@ trait ApiJson501Trait
      */
     public function jsonElementReplace(Request $request, int $id): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     // PATCH
@@ -158,7 +158,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionUpdate(): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
@@ -171,7 +171,7 @@ trait ApiJson501Trait
      */
     public function jsonElementUpdate(Request $request, int $id): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     // DELETE
@@ -185,7 +185,7 @@ trait ApiJson501Trait
      */
     public function jsonCollectionDelete(Request $request): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
@@ -197,7 +197,7 @@ trait ApiJson501Trait
      */
     public function jsonElementDelete(Request $request, int $id): JsonResponse
     {
-        return Response::json($this->response, $this->response['errors']['status']);
+        return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
 }

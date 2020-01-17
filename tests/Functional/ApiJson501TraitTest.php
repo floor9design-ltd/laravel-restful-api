@@ -57,17 +57,22 @@ class ApiJson501TraitTest extends TestCase
         };
 
         // A correct json response:
-        $json_api_response = json_encode([
-            'data' => [],
-            'errors' => [
-                'status' => '501',
-                'title' => 'Not Implemented',
-                'detail' => 'This feature is not yet implemented.',
-            ],
-            'meta' => [
-                'status' => null
+        $json_api_response = json_encode(
+            [
+                'errors' => [
+                    [
+                        'status' => '501',
+                        'title' => 'Not Implemented',
+                        'detail' => 'This feature is not yet implemented.',
+                    ]
+                ],
+                'meta' => [
+                    'status' => '501',
+                    'title' => 'Not Implemented',
+                    'detail' => 'This feature is not yet implemented.',
+                ]
             ]
-        ]);
+        );
 
         // mock a request
         $request = $this->createMock(Request::class);

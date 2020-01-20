@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/laravel-restful-api/master.svg?style=plastic)](https://travis-ci.org/elb98rm/laravel-restful-api)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/laravel-restful-api.svg?style=plastic)](https://packagist.org/packages/league/laravel-restful-api)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/laravel-restful-api.svg?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
 
 A set of restful API classes that offer strict RESTful methods for laravel. Currently in development.
 

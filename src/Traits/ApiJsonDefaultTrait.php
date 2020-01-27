@@ -115,12 +115,15 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['links']['prev'] = $objects->previousPageUrl();
         }
 
+        // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+        $id_name = $this->model->getKeyName();
+
         foreach ($objects as $object) {
             $this->json_api_response_array['data'][] = [
-                'id' => (string)$object->id,
+                'id' => (string)$object->$id_name,
                 'type' => $this->model->getTable(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->id],
+                'links' => ['self' => $this->url_base . '/' . $object->$id_name],
                 'relationships' => new \stdClass()
             ];
         }
@@ -161,11 +164,14 @@ trait ApiJsonDefaultTrait
 
             $this->json_api_response_array['links'] = ['collection' => $this->url_base];
 
+            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+            $id_name = $this->model->getKeyName();
+
             $this->json_api_response_array['data'] = [
-                'id' => (string)$object->id,
+                'id' => (string)$object->$id_name,
                 'type' => $this->model->getTable(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->id]
+                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
             ];
 
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
@@ -187,7 +193,7 @@ trait ApiJsonDefaultTrait
      */
     public function jsonCreate(Request $request): JsonResponse
     {
-        // laravel parse the request into an array: reset this to be json where valid array (move this into a private function later)
+        // laravel parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
 
         $validator = Validator::make(
@@ -196,25 +202,143 @@ trait ApiJsonDefaultTrait
         );
 
         if ($validator->fails()) {
-            $this->json_api_response_array['status'] = '422';
-            $this->json_api_response_array['detail'] = 'Input validation has failed.';
-            $this->json_api_response_array['validator_errors'] = $validator->errors();
+            foreach ($validator->errors()->all() as $field_errors) {
+                $this->json_api_response_array['errors'][] = [
+                    'status' => '422',
+                    'title' => 'Input validation has failed',
+                    'detail' => $field_errors //$validator_error
+                ];
+            }
+
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+
+            $status = $this->json_api_response_array['errors'][0]['status'];
         } else {
+            unset($this->json_api_response_array['errors']);
+
             $single_object_name = Inflector::singularize($this->model->getTable());
 
             $object = new $this->controller_model($re_encoded_array);
             $object->save();
-            $this->json_api_response_array['status'] = '201';
-            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was created.';
-            $this->json_api_response_array[$single_object_name] = $object->getApiFilter(
-                $object
-            );
+
+            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+            $id_name = $this->model->getKeyName();
+
+            $this->json_api_response_array['data'] = [
+                'id' => (string)$object->$id_name,
+                'type' => $this->model->getTable(),
+                'attributes' => $object->getApiFilter($object),
+                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
+            ];
+
+            $this->json_api_response_array['data']['relationships'] = new \stdClass();
+
+            $status = $this->json_api_response_array['meta']['status'] = "201";
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
+            $this->json_api_response_array['meta']['count'] = 1;
         }
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+        return Response::json($this->json_api_response_array, $status);
     }
 
     // jsonCreateById
+
+    /**
+     * The json version of the create feature, specified by id
+     * "Create a new entry in the collection. The new entry's URI is assigned automatically."
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse json response
+     */
+    public function jsonCreateById(Request $request, int $id): JsonResponse
+    {
+        // An often used validator rule is something like:
+        // 'id' => 'sometimes|exists:objects|integer',
+        // This fails when forcing a specific ID create, create a second validator for just the ID:
+
+        // laravel parse the request into an array:
+        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
+
+        // Run normal validation (without id)
+        $validator_standard = Validator::make(
+            $re_encoded_array,
+            $this->controller_model::getValidation()
+        );
+
+        $re_encoded_array[$this->model->getKeyName()] = (int)$id;
+
+        // Then run a second validation to check ID uniqueness:
+        $validator_id = Validator::make(
+            $re_encoded_array,
+            [
+                $this->model->getKeyName() => 'sometimes|unique:' . $this->model->getTable(
+                    ) . ',' . $this->model->getKeyName() . '|integer'
+            ]
+        );
+
+        // combine the errors of the two validators:
+        $combined_validator_errors = [];
+
+        if ($validator_standard->fails()) {
+            foreach ($validator_standard->errors()->all() as $field_errors) {
+                $combined_validator_errors[] = [
+                    'status' => '422',
+                    'title' => 'Input validation has failed',
+                    'detail' => $field_errors
+                ];
+            }
+
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+        }
+
+        if ($validator_id->fails()) {
+            foreach ($validator_id->errors()->all() as $id_errors) {
+                $combined_validator_errors[] = [
+                    'status' => '422',
+                    'title' => 'Input validation has failed',
+                    'detail' => $id_errors
+                ];
+            }
+
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+        }
+
+        if ($validator_standard->fails() || $validator_id->fails()) {
+            $this->json_api_response_array['errors'] = $combined_validator_errors;
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+
+            $status = $this->json_api_response_array['errors'][0]['status'];
+        } else {
+            $single_object_name = Inflector::singularize($this->model->getTable());
+            unset($this->json_api_response_array['errors']);
+
+            $object = new $this->controller_model($re_encoded_array);
+            $object->save();
+
+            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+            $id_name = $this->model->getKeyName();
+
+            $this->json_api_response_array['data'] = [
+                'id' => (string)$object->$id_name,
+                'type' => $this->model->getTable(),
+                'attributes' => $object->getApiFilter($object),
+                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
+            ];
+
+            $this->json_api_response_array['data']['relationships'] = new \stdClass();
+
+            $status = $this->json_api_response_array['meta']['status'] = "201";
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
+            $this->json_api_response_array['meta']['count'] = 1;
+        }
+
+        return Response::json($this->json_api_response_array, $status);
+    }
 
     // PUT
 
@@ -228,8 +352,10 @@ trait ApiJsonDefaultTrait
      * @param int $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, int $id): JsonResponse
-    {
+    public function jsonElementReplace(
+        Request $request,
+        int $id
+    ): JsonResponse {
         // laravel issue with PUT, so create the array manually:
         $object = new $this->controller_model();
         foreach ($object->getFillable() as $fillable) {
@@ -363,5 +489,4 @@ trait ApiJsonDefaultTrait
 
         return $re_encoded_array;
     }
-
 }

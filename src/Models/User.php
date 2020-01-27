@@ -30,7 +30,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * An essentially empty class designed to allow for testing. It returns test data only.
  * Used in Floor9design\LaravelRestfulApi\Tests\Functional\ApiJsonDefaultTraitTest
  *
- * Rather than mess abot mocking internally, this class just simulates the results, allowing meaningful simple tests
+ * Rather than mess about mocking internally, this class just simulates the results, allowing meaningful simple tests
  * of the controller level trait functions.
  *
  * @category  None
@@ -93,10 +93,39 @@ class User extends Model
     }
 
     /**
+     * Simulate an all() by returning a paginated list.
      *
      * @return LengthAwarePaginator
      */
     public static function paginate(int $maximum_response_number)
+    {
+        // make an array of 250 users
+        $users = [];
+
+        $i = 1;
+        while ($i <= 250) {
+            // Update the ID to make them unique
+            $user = new User();
+            $user->id = $i;
+
+            $users[] = $user;
+
+            $i++;
+        }
+
+        // Have to manually slice as it's a manually created paginator
+        $paginated_users = array_slice($users, 0, 200);
+
+        // turn into a length aware paginator
+        return new LengthAwarePaginator($paginated_users, count($users), $maximum_response_number, 1);
+    }
+
+    /**
+     * Simulate a create.
+     *
+     * @return LengthAwarePaginator
+     */
+    public static function create(int $maximum_response_number)
     {
         // make an array of 250 users
         $users = [];

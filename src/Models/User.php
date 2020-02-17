@@ -121,31 +121,31 @@ class User extends Model
     }
 
     /**
-     * Simulate a create.
+     * Simulate a create, responding with either a validation fail or pass.
      *
-     * @return LengthAwarePaginator
+     * @param array $input
+     * @return string
      */
-    public static function create(int $maximum_response_number)
+    public static function create(array $input) : string
     {
-        // make an array of 250 users
-        $users = [];
+        $response = null;
 
-        $i = 1;
-        while ($i <= 250) {
-            // Update the ID to make them unique
-            $user = new User();
-            $user->id = $i;
-
-            $users[] = $user;
-
-            $i++;
+        // our first test will simulate a failed a duplicate email test, so return the correct array:
+        if ($input['email'] == 'a@b.com') {
+            $response = json_encode(
+                [
+                    "errors" => [
+                        [
+                            "status" => "422",
+                            "title" => "Input validation has failed",
+                            "detail" => "The email has already been taken."
+                        ]
+                    ]
+                ]
+            );
         }
 
-        // Have to manually slice as it's a manually created paginator
-        $paginated_users = array_slice($users, 0, 200);
-
-        // turn into a length aware paginator
-        return new LengthAwarePaginator($paginated_users, count($users), $maximum_response_number, 1);
+        return $response;
     }
 
     /**
@@ -156,5 +156,22 @@ class User extends Model
     public function getTable()
     {
         return 'users';
+    }
+
+    /**
+     * This returns the validation
+     *
+     * @param array $uniques A list of unique elements that will be appended to the validation
+     * @return array
+     */
+    public static function getValidation(?array $uniques = null, ?int $id = null): array
+    {
+        $validation = self::$validation;
+
+        foreach ($uniques ?? [] as $unique) {
+            $validation[$unique] .= ',' . $id;
+        }
+
+        return $validation;
     }
 }

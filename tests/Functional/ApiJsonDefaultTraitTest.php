@@ -1,492 +1,240 @@
 <?php
 /**
- * ApiJsonDefaultTrait.php
+ * ApiJsonDefaultTraitTest.php
  *
- * ApiJsonDefaultTrait trait
+ * ApiJsonDefaultTraitTest class
  *
- * php 7.0+
+ * php 7.1+
  *
  * @category  None
- * @package   Floor9design\LaravelRestfulApi\Traits
+ * @package   Floor9design\LaravelRestfulApi\Tests\Functional
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://www.floor9design.com
+ * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://floor9design.com
  * @version   1.0
  * @since     File available since Release 1.0
  *
  */
 
-namespace Floor9design\LaravelRestfulApi\Traits;
+namespace Floor9design\LaravelRestfulApi\Tests\Functional;
 
-use Doctrine\Common\Inflector\Inflector;
-use Illuminate\Http\JsonResponse;
+use Floor9design\LaravelRestfulApi\Models\User;
+use Floor9design\LaravelRestfulApi\Traits\ApiJsonDefaultTrait;
+use Floor9design\LaravelRestfulApi\Traits\ApiJsonTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Orchestra\Testbench\TestCase;
 
 /**
- * Trait ApiJsonDefaultTrait
+ * ApiJsonDefaultTraitTest
  *
- * Trait to give the base responses for all classes.
- *
- * These match the definitions on Wikipedia.
- *
- * Currently returns 501 (not implemented) on all methods: the point is to overwrite them where needed, while these
- * methods provide useful feedback for any interaction in the meantime.
+ * This test file tests the RESTful API routes generically.
+ * This is a low level/internal functional test.
  *
  * @category  None
- * @package   Floor9design\LaravelRestfulApi\Traits
+ * @package   Floor9design\LaravelRestfulApi\Tests\Functional
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://www.floor9design.com
- * @link      https://laravel.com/
- * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
+ * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://floor9design.com
+ * @version   1.0
+ * @see       \Floor9design\LaravelRestfulApi\Models\User
  * @since     File available since Release 1.0
  */
-trait ApiJsonDefaultTrait
+class ApiJsonDefaultTraitTest extends TestCase
 {
-
-    /**
-     * @var Object the model exposed by the controller
-     */
-    protected $model;
-
-    /**
-     * @var string the model exposed by the controller
-     */
-    protected $controller_model;
-
-    /**
-     * @var string the base url for the model; this should ideally be overwritten
-     */
-    protected $url_base = '/';
-
-    /**
-     * A clean array to populate, including the main required elements
-     *
-     * @var array
-     */
-    protected $json_api_response_array = [
-        'data' => [],
-        'errors' => [],
-        'meta' => [
-            'status' => null
-        ]
-    ];
 
     // GET
 
+    //jsonIndex
+
     /**
-     * The json version of the index screen
-     * "List the URIs and perhaps other details of the collection's members"
+     * Test ApiJsonDefaultTrait:JsonIndex.
      *
-     * @param Request $request Laravel Request object
-     * @return JsonResponse json response
+     * @return void
      */
-    public function jsonIndex(Request $request): JsonResponse
+    public function testJsonIndex()
     {
-        $objects = $this->controller_model::paginate($this->maximum_response_number);
+        // Set up a mock trait in a class
+        $test_controller = new class {
+            use ApiJsonDefaultTrait;
+            use ApiJsonTrait;
 
-        // This always returns 200 if it's got this far... an empty response set is still "OK".
-        $this->json_api_response_array['meta']['status'] = "200";
-        $this->json_api_response_array['meta']['count'] = $objects->count();
+            public function __construct()
+            {
+                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
+                $this->model = new User();
+                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
+            }
+        };
 
-        unset($this->json_api_response_array['errors']);
+        // mock a request
+        $request_user = $this->createMock(Request::class);
 
-        $this->json_api_response_array['links'] = [
-            'collection' => $this->url_base,
-            'self' => $this->url_base . '?page=' . $objects->currentPage(),
-            'first' => $this->url_base . '?page=1',
-            'last' => $this->url_base . '?page=' . $objects->lastPage(),
-            'prev' => null,
-            'next' => null
-        ];
+        // make an array of 200 users
+        $users = [];
 
-        if ($objects->nextPageUrl()) {
-            $this->json_api_response_array['links']['next'] = $objects->nextPageUrl();
-        }
-
-        if ($objects->previousPageUrl()) {
-            $this->json_api_response_array['links']['prev'] = $objects->previousPageUrl();
-        }
-
-        // remember: even if the ID is not called "id", JSON API format requires that it be called that:
-        $id_name = $this->model->getKeyName();
-
-        foreach ($objects as $object) {
-            $this->json_api_response_array['data'][] = [
-                'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name],
-                'relationships' => new \stdClass()
+        $i = 1;
+        while ($i <= 200) {
+            $users[] = [
+                'id' => (string)$i,
+                'type' => 'users',
+                'attributes' => [
+                    'name' => 'Rick',
+                    'email' => 'rick@floor9design.com'
+                ],
+                'links' => [
+                    'self' => 'https://laravel-restful-api.local/users/' . $i
+                ],
+                'relationships' => new \stdClass(),
             ];
+            $i++;
         }
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['meta']['status']);
+        // Expected user object response
+        $api_user_response = json_encode(
+            [
+                'data' => $users,
+                'meta' => [
+                    'status' => "200",
+                    'count' => 200
+                ],
+                'links' => [
+                    'collection' => 'https://laravel-restful-api.local/users',
+                    "self" => "https://laravel-restful-api.local/users?page=1",
+                    "first" => "https://laravel-restful-api.local/users?page=1",
+                    "last" => "https://laravel-restful-api.local/users?page=2",
+                    "prev" => null,
+                    // Note: as it's mocked, Users::path is not set, so it returns a "/". This works and is tested in reality.
+                    "next" => "/?page=2"
+                ]
+            ]
+        );
+
+        $user_response = $test_controller->jsonIndex($request_user);
+        $this->assertEquals($api_user_response, $user_response->getContent());
+    }
+
+    // jsonDetails
+
+    /**
+     * Test ApiJsonDefaultTrait:JsonDetails.
+     *
+     * @return void
+     */
+    public function testJsonDetails404()
+    {
+        // Set up a mock trait in a class
+        $test_controller = new class {
+            use ApiJsonDefaultTrait;
+
+            public function __construct()
+            {
+                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
+                $this->model = new User();
+                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
+            }
+        };
+
+        // mock a request
+        $request_404 = $this->createMock(Request::class);
+
+        // empty response:
+        $api_404_response = json_encode(
+            [
+                'errors' => [
+                    [
+                        'status' => '404',
+                        'title' => 'Resource could not found',
+                        'detail' => 'The user could not be found.'
+                    ]
+                ]
+            ]
+        );
+
+        // 404
+        $response_404 = $test_controller->jsonDetails($request_404, 0);
+        $this->assertEquals($api_404_response, $response_404->getContent());
     }
 
     /**
-     * The json version of the detail screen
-     * "Retrieve a representation of the addressed member of the collection"
+     * Test ApiJsonDefaultTrait:JsonDetails.
      *
-     * @param Request $request Laravel Request object
-     * @param int $id Object id
-     * @return JsonResponse json response
+     * @return void
      */
-    public function jsonDetails(Request $request, int $id): JsonResponse
+    public function testJsonDetailsUser()
     {
-        $object = $this->controller_model::find($id ?? 0);
-        $status = null;
+        // Set up a mock trait in a class
+        $test_controller = new class {
+            use ApiJsonDefaultTrait;
 
-        if (!$object) {
-            $this->json_api_response_array['errors'] = [
-                [
-                    'status' => '404',
-                    'title' => 'Resource could not found',
-                    'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
+            public function __construct()
+            {
+                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
+                $this->model = new User();
+                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
+            }
+        };
+
+        // mock a request
+        $request_user = $this->createMock(Request::class);
+
+        // Expected user object response
+        $api_user_response = json_encode(
+            [
+                'data' => [
+                    'id' => "1",
+                    'type' => 'users',
+                    'attributes' => [
+                        'name' => 'Rick',
+                        'email' => 'rick@floor9design.com'
+                    ],
+                    'links' => [
+                        'self' => 'https://laravel-restful-api.local/users/1'
+                    ],
+                    'relationships' => new \stdClass(),
+                ],
+                'meta' => [
+                    'status' => "200",
+                    'count' => 1
+                ],
+                'links' => [
+                    'collection' => 'https://laravel-restful-api.local/users'
                 ]
-            ];
-            unset($this->json_api_response_array['meta']);
-            unset($this->json_api_response_array['data']);
+            ]
+        );
 
-            $status = $this->json_api_response_array['errors'][0]['status'];
-        } else {
-            $this->json_api_response_array['meta']['status'] = '200';
-            $this->json_api_response_array['meta']['count'] = 1;
-
-            unset($this->json_api_response_array['errors']);
-
-            $this->json_api_response_array['links'] = ['collection' => $this->url_base];
-
-            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
-            $id_name = $this->model->getKeyName();
-
-            $this->json_api_response_array['data'] = [
-                'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
-            ];
-
-            $this->json_api_response_array['data']['relationships'] = new \stdClass();
-
-            $status = $this->json_api_response_array['meta']['status'];
-        }
-
-        return Response::json($this->json_api_response_array, $status);
+        $user_response = $test_controller->jsonDetails($request_user, 1);
+        $this->assertEquals($api_user_response, $user_response->getContent());
+        // Note: this only tests page1, but there's no real need to check if laravel pagination works... it does!
     }
 
     // CREATE
 
-    /**
-     * The json version of the create feature
-     * "Create a new entry in the collection. The new entry's URI is assigned automatically."
-     *
-     * @param Request $request
-     * @return JsonResponse json response
-     */
-    public function jsonCreate(Request $request): JsonResponse
-    {
-        // laravel parse the request into an array:
-        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
-
-        $validator = Validator::make(
-            $re_encoded_array,
-            $this->controller_model::getValidation()
-        );
-
-        if ($validator->fails()) {
-            foreach ($validator->errors()->all() as $field_errors) {
-                $this->json_api_response_array['errors'][] = [
-                    'status' => '422',
-                    'title' => 'Input validation has failed',
-                    'detail' => $field_errors //$validator_error
-                ];
-            }
-
-            unset($this->json_api_response_array['meta']);
-            unset($this->json_api_response_array['data']);
-
-            $status = $this->json_api_response_array['errors'][0]['status'];
-        } else {
-            unset($this->json_api_response_array['errors']);
-
-            $single_object_name = Inflector::singularize($this->model->getTable());
-
-            $object = new $this->controller_model($re_encoded_array);
-            $object->save();
-
-            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
-            $id_name = $this->model->getKeyName();
-
-            $this->json_api_response_array['data'] = [
-                'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
-            ];
-
-            $this->json_api_response_array['data']['relationships'] = new \stdClass();
-
-            $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
-            $this->json_api_response_array['meta']['count'] = 1;
-        }
-
-        return Response::json($this->json_api_response_array, $status);
-    }
+    // jsonCreate
 
     // jsonCreateById
-
-    /**
-     * The json version of the create feature, specified by id
-     * "Create a new entry in the collection. The new entry's URI is assigned automatically."
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse json response
-     */
-    public function jsonCreateById(Request $request, int $id): JsonResponse
-    {
-        // An often used validator rule is something like:
-        // 'id' => 'sometimes|exists:objects|integer',
-        // This fails when forcing an ID create, create a second validator for just the ID:
-
-        // laravel parse the request into an array:
-        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
-
-        // Run normal validation (without id)
-        $validator_standard = Validator::make(
-            $re_encoded_array,
-            $this->controller_model::getValidation()
-        );
-
-        $re_encoded_array[$this->model->getKeyName()] = (int)$id;
-
-        // Then run a second validation to check ID uniqueness:
-        $validator_id = Validator::make(
-            $re_encoded_array,
-            [
-                $this->model->getKeyName() => 'sometimes|unique:' . $this->model->getTable(
-                    ) . ',' . $this->model->getKeyName() . '|integer'
-            ]
-        );
-
-        // combine the errors of the two validators:
-        $combined_validator_errors = [];
-
-        if ($validator_standard->fails()) {
-            foreach ($validator_standard->errors()->all() as $field_errors) {
-                $combined_validator_errors[] = [
-                    'status' => '422',
-                    'title' => 'Input validation has failed',
-                    'detail' => $field_errors
-                ];
-            }
-
-            unset($this->json_api_response_array['meta']);
-            unset($this->json_api_response_array['data']);
-        }
-
-        if ($validator_id->fails()) {
-            foreach ($validator_id->errors()->all() as $id_errors) {
-                $combined_validator_errors[] = [
-                    'status' => '422',
-                    'title' => 'Input validation has failed',
-                    'detail' => $id_errors
-                ];
-            }
-
-            unset($this->json_api_response_array['meta']);
-            unset($this->json_api_response_array['data']);
-        }
-
-        if ($validator_standard->fails() || $validator_id->fails()) {
-            $this->json_api_response_array['errors'] = $combined_validator_errors;
-            unset($this->json_api_response_array['meta']);
-            unset($this->json_api_response_array['data']);
-
-            $status = $this->json_api_response_array['errors'][0]['status'];
-        } else {
-            $single_object_name = Inflector::singularize($this->model->getTable());
-            unset($this->json_api_response_array['errors']);
-
-            $object = new $this->controller_model($re_encoded_array);
-            $object->save();
-
-            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
-            $id_name = $this->model->getKeyName();
-
-            $this->json_api_response_array['data'] = [
-                'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
-                'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
-            ];
-
-            $this->json_api_response_array['data']['relationships'] = new \stdClass();
-
-            $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
-            $this->json_api_response_array['meta']['count'] = 1;
-        }
-
-        return Response::json($this->json_api_response_array, $status);
-    }
 
     // PUT
 
     // jsonCollectionReplace
 
-    /**
-     * Replaces an element
-     * "Replace the usered member of the collection, or if it does not exist, create it."
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse json response
-     */
-    public function jsonElementReplace(
-        Request $request,
-        int $id
-    ): JsonResponse {
-        // laravel issue with PUT, so create the array manually:
-        $object = new $this->controller_model();
-        foreach ($object->getFillable() as $fillable) {
-            $filtered[$fillable] = $request->get($fillable);
-        }
-        $filtered['id'] = $id;
-
-        $validator = Validator::make(
-            $filtered,
-            $this->controller_model::getValidation($object->getDefaultIgnoredUniques(), $id)
-        );
-
-        if ($validator->fails()) {
-            $this->json_api_response_array['status'] = '422';
-            $this->json_api_response_array['detail'] = 'Input validation has failed.';
-            $this->json_api_response_array['validator_errors'] = $validator->errors();
-        } else {
-            // Clear old object
-            $old = $this->controller_model::find($id);
-            $old->forceDelete();
-            // Write replacement
-            $object->fill($filtered);
-            $object->save();
-            $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
-                    $this->model->getTable()
-                ) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
-                $object
-            );
-        }
-
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
-    }
+    // jsonElementReplace
 
     // PATCH
 
     // jsonCollectionUpdate
 
-    /**
-     * Replaces an element
-     * "Replace the usered member of the collection, or if it does not exist, create it."
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse json response
-     */
-    public function jsonElementUpdate(Request $request, int $id): JsonResponse
-    {
-        // laravel issue with PATCH, so create the array manually:
-        $object = new $this->controller_model();
-        foreach ($object->getFillable() as $fillable) {
-            $filtered[$fillable] = $request->get($fillable);
-        }
-        $filtered['id'] = $id;
-
-        $validator = Validator::make(
-            $filtered,
-            $this->controller_model::getValidation($object->getDefaultIgnoredUniques(), $id)
-        );
-
-        if ($validator->fails()) {
-            $this->json_api_response_array['status'] = '422';
-            $this->json_api_response_array['detail'] = 'Input validation has failed.';
-            $this->json_api_response_array['validator_errors'] = $validator->errors();
-        } else {
-            $object = $this->controller_model::find($id);
-
-            $object->fill($filtered);
-            $object->save();
-            $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
-                    $this->model->getTable()
-                ) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
-                $object
-            );
-        }
-
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
-    }
+    // jsonElementUpdate
 
     // DELETE
 
     // jsonCollectionDelete
 
-    /**
-     * Delete the element.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse json response
-     */
-    public function jsonElementDelete(Request $request, int $id): JsonResponse
-    {
-        $object = $this->controller_model::find($id ?? 0);
-
-        if (!$object) {
-            $this->json_api_response_array['status'] = '404';
-            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
-        } else {
-            $object->delete();
-
-            $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was deleted.';
-        }
-
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
-    }
-
-    /**
-     * Parses an input array in the form of a JSON API request, returning thr attributes key.
-     * Also prepares json fields for database writing
-     *
-     * @param array $array
-     * @return array
-     */
-    public function extractJsonApiAttributes(array $array): Array
-    {
-        $re_encoded_array = [];
-
-        if ($array['data']['attributes'] ?? 0) {
-            foreach ($array['data']['attributes'] as $key => $value) {
-                if (Str::contains($key, 'json')) {
-                    $re_encoded_array[$key] = json_encode($value);
-                } else {
-                    $re_encoded_array[$key] = $value;
-                }
-            }
-        }
-
-        return $re_encoded_array;
-    }
+    // jsonElementDelete
 }
+

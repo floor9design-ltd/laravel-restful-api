@@ -20,7 +20,6 @@
 
 namespace Floor9design\LaravelRestfulApi\Traits;
 
-use Doctrine\Common\Inflector\Inflector;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -50,34 +49,144 @@ use Illuminate\Support\Str;
  */
 trait ApiJsonDefaultTrait
 {
-
     /**
      * @var Object the model exposed by the controller
      */
-    protected $model;
+    protected object $model;
 
     /**
      * @var string the model exposed by the controller
      */
-    protected $controller_model;
+    protected string $controller_model;
+
+    /**
+     * @var string the singular name of the model
+     */
+    protected string $model_name_singular;
+
+    /**
+     * @var string the plural name of the model
+     */
+    protected string $model_name_plural;
 
     /**
      * @var string the base url for the model; this should ideally be overwritten
      */
     protected $url_base = '/';
 
+    // Accessors
+
     /**
-     * A clean array to populate, including the main required elements
+     * @return Object
+     * @see $model
      *
-     * @var array
      */
-    protected $json_api_response_array = [
-        'data' => [],
-        'errors' => [],
-        'meta' => [
-            'status' => null
-        ]
-    ];
+    public function getModel(): object
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param Object $model
+     * @return ApiJsonDefaultTrait
+     * @see $model
+     *
+     */
+    public function setModel(object $model): object
+    {
+        $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @see $controller_model
+     *
+     */
+    public function getControllerModel(): string
+    {
+        return $this->controller_model;
+    }
+
+    /**
+     * @param string $controller_model
+     * @return ApiJsonDefaultTrait
+     * @see $controller_model
+     *
+     */
+    public function setControllerModel(string $controller_model): object
+    {
+        $this->controller_model = $controller_model;
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @see $model_name_singular
+     *
+     */
+    public function getModelNameSingular(): string
+    {
+        return $this->model_name_singular;
+    }
+
+    /**
+     * @param string $model_name_singular
+     * @return ApiJsonDefaultTrait
+     * @see $model_name_singular
+     *
+     */
+    public function setModelNameSingular(string $model_name_singular): object
+    {
+        $this->model_name_singular = $model_name_singular;
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @see $model_name_plural
+     *
+     */
+    public function getModelNamePlural(): string
+    {
+        return $this->model_name_plural;
+    }
+
+    /**
+     * @param string $model_name_plural
+     * @return ApiJsonDefaultTrait
+     * @see $model_name_plural
+     *
+     */
+    public function setModelNamePlural(string $model_name_plural): object
+    {
+        $this->model_name_plural = $model_name_plural;
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @see $url_base
+     *
+     */
+    public function getUrlBase(): string
+    {
+        return $this->url_base;
+    }
+
+    /**
+     * @param string $url_base
+     * @return ApiJsonDefaultTrait
+     * @see $url_base
+     *
+     */
+    public function setUrlBase(string $url_base): object
+    {
+        $this->url_base = $url_base;
+        return $this;
+    }
+
+    // Main functions
 
     // GET
 
@@ -90,7 +199,7 @@ trait ApiJsonDefaultTrait
      */
     public function jsonIndex(Request $request): JsonResponse
     {
-        $objects = $this->controller_model::paginate($this->maximum_response_number);
+        $objects = $this->getControllerModel()::paginate($this->maximum_response_number);
 
         // This always returns 200 if it's got this far... an empty response set is still "OK".
         $this->json_api_response_array['meta']['status'] = "200";
@@ -99,10 +208,10 @@ trait ApiJsonDefaultTrait
         unset($this->json_api_response_array['errors']);
 
         $this->json_api_response_array['links'] = [
-            'collection' => $this->url_base,
-            'self' => $this->url_base . '?page=' . $objects->currentPage(),
-            'first' => $this->url_base . '?page=1',
-            'last' => $this->url_base . '?page=' . $objects->lastPage(),
+            'collection' => $this->getUrlBase(),
+            'self' => $this->getUrlBase() . '?page=' . $objects->currentPage(),
+            'first' => $this->getUrlBase() . '?page=1',
+            'last' => $this->getUrlBase() . '?page=' . $objects->lastPage(),
             'prev' => null,
             'next' => null
         ];
@@ -121,9 +230,9 @@ trait ApiJsonDefaultTrait
         foreach ($objects as $object) {
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
+                'type' => $this->getModelNameSingular(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name],
+                'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name],
                 'relationships' => new \stdClass()
             ];
         }
@@ -141,7 +250,7 @@ trait ApiJsonDefaultTrait
      */
     public function jsonDetails(Request $request, int $id): JsonResponse
     {
-        $object = $this->controller_model::find($id ?? 0);
+        $object = $this->getControllerModel()::find($id ?? 0);
         $status = null;
 
         if (!$object) {
@@ -149,7 +258,7 @@ trait ApiJsonDefaultTrait
                 [
                     'status' => '404',
                     'title' => 'Resource could not found',
-                    'detail' => 'The ' . Inflector::singularize($this->model->getTable()) . ' could not be found.'
+                    'detail' => 'The ' . $this->getModelNameSingular() . ' could not be found.'
                 ]
             ];
             unset($this->json_api_response_array['meta']);
@@ -162,16 +271,16 @@ trait ApiJsonDefaultTrait
 
             unset($this->json_api_response_array['errors']);
 
-            $this->json_api_response_array['links'] = ['collection' => $this->url_base];
+            $this->json_api_response_array['links'] = ['collection' => $this->getUrlBase()];
 
             // remember: even if the ID is not called "id", JSON API format requires that it be called that:
             $id_name = $this->model->getKeyName();
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
+                'type' => $this->getModelNameSingular(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
+                'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
@@ -179,7 +288,7 @@ trait ApiJsonDefaultTrait
             $status = $this->json_api_response_array['meta']['status'];
         }
 
-        return Response::json($this->json_api_response_array, $status);
+        return Response::json($this->getJsonApiResponseArray(), $status);
     }
 
     // CREATE
@@ -218,8 +327,6 @@ trait ApiJsonDefaultTrait
         } else {
             unset($this->json_api_response_array['errors']);
 
-            $single_object_name = Inflector::singularize($this->model->getTable());
-
             $object->fill($re_encoded_array);
             $object->save();
 
@@ -228,22 +335,20 @@ trait ApiJsonDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
+                'type' => $this->getModelNameSingular(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
+                'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was created.';
             $this->json_api_response_array['meta']['count'] = 1;
         }
 
         return Response::json($this->json_api_response_array, $status);
     }
-
-    // jsonCreateById
 
     /**
      * The json version of the create feature, specified by id
@@ -292,8 +397,6 @@ trait ApiJsonDefaultTrait
         } else {
             unset($this->json_api_response_array['errors']);
 
-            $single_object_name = Inflector::singularize($this->model->getTable());
-
             $object->fill($re_encoded_array);
             $object->save();
 
@@ -302,24 +405,92 @@ trait ApiJsonDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->model->getTable(),
+                'type' => $this->getModelNameSingular(),
                 'attributes' => $object->getApiFilter($object),
-                'links' => ['self' => $this->url_base . '/' . $object->$id_name]
+                'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $single_object_name . ' was created.';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was created.';
             $this->json_api_response_array['meta']['count'] = 1;
         }
 
-        return Response::json($this->json_api_response_array, $status);
+        return Response::json($this->getJsonApiResponseArray(), $status);
     }
 
     // PUT
 
-    // jsonCollectionReplace
+    /**
+     * Replaces the entire collection
+     * "Replace the entire collection with another collection."
+     *
+     * @return JsonResponse json response
+     */
+    public function jsonCollectionReplace(Request $request): JsonResponse
+    {
+        // parse the request into an array:
+        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
+
+        // instantiate object to help with validation:
+        $object = new $this->model();
+        $new_collection = [];
+
+        // drop the existing collections
+        $this->model::query()->delete();
+
+        // Cycle over the array and add collection items:
+        foreach ($re_encoded_array as $collection_item) {
+            $validator = Validator::make(
+                $collection_item,
+                $object->getValidation()
+            );
+
+            $failed = false;
+            if ($validator->fails()) {
+                foreach ($validator->errors()->all() as $field_errors) {
+                    $this->json_api_response_array['errors'][] = [
+                        'status' => '422',
+                        'title' => 'Input validation has failed',
+                        'detail' => $field_errors,
+                        'data' => $collection_item
+                    ];
+                }
+
+                unset($this->json_api_response_array['meta']);
+                unset($this->json_api_response_array['data']);
+
+                $status = $this->json_api_response_array['errors'][0]['status'];
+                $failed = true;
+
+                break;
+            }
+        }
+
+        // if there's no errors:
+        if (!$failed) {
+            unset($this->json_api_response_array['errors']);
+
+            foreach ($re_encoded_array as $collection_item) {
+                $item = new $this->model();
+
+                $item->fill($collection_item);
+                $item->save();
+
+                $processed_collection[] = $item;
+            }
+
+            $this->json_api_response_array['meta']['count'] = 1;
+
+            $status = $this->json_api_response_array['meta']['status'] = '200';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular(
+                ) . ' collection was replaced.';
+            $this->json_api_response_array['meta']['count'] = count($re_encoded_array);
+        }
+
+        return Response::json($this->json_api_response_array, $status);
+    }
 
     /**
      * Replaces an element
@@ -344,7 +515,7 @@ trait ApiJsonDefaultTrait
         );
 
         // Now we have that, load the model
-        $object = $this->controller_model::find($id);
+        $object = $this->getControllerModel()::find($id);
 
         // if there's no object, instantiate one to help with validation:
         if (!$object) {
@@ -363,32 +534,55 @@ trait ApiJsonDefaultTrait
                 }
             }
 
-            $this->json_api_response_array['status'] = '422';
-            $this->json_api_response_array['detail'] = 'Input validation has failed.';
-            $this->json_api_response_array['validator_errors'] = $validator->errors();
+            foreach ($validator->errors()->all() as $field_errors) {
+                $this->json_api_response_array['errors'][] = [
+                    'status' => '422',
+                    'title' => 'Input validation has failed',
+                    'detail' => $field_errors
+                ];
+            }
+
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+
+            $status = $this->json_api_response_array['errors'][0]['status'];
         } else {
+            unset($this->json_api_response_array['errors']);
+
             // Delete the old one : replace, not update, and use correct method to counteract soft deletes
             $object->forceDelete();
+
             // Write replacement
             $object = new $this->model();
             $object->fill($re_encoded_array);
             $object->id = $id;
             $object->save();
-            $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
-                    $this->model->getTable()
+
+            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+            $id_name = $this->model->getKeyName();
+
+            $this->json_api_response_array['data'] = [
+                'id' => (string)$object->$id_name,
+                'type' => $this->getModelNameSingular(),
+                'attributes' => $object->getApiFilter($object),
+                'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
+            ];
+
+            $this->json_api_response_array['data']['relationships'] = new \stdClass();
+
+            $status = $this->json_api_response_array['meta']['status'] = "200";
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular(
                 ) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
-                $object
-            );
+            $this->json_api_response_array['meta']['count'] = 1;
         }
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+        return Response::json($this->getJsonApiResponseArray(), $status);
     }
 
     // PATCH
 
     // jsonCollectionUpdate
+
     /**
      * Replaces an element
      * "Replace the usered member of the collection, or if it does not exist, create it."
@@ -404,7 +598,7 @@ trait ApiJsonDefaultTrait
         $re_encoded_array['id'] = $id;
 
         // Now we have that, load the model
-        $object = $this->controller_model::find($id);
+        $object = $this->getControllerModel()::find($id);
 
         // if there's no object, instantiate one to help with validation:
         if (!$object) {
@@ -421,13 +615,15 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['detail'] = 'Input validation has failed.';
             $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
+            $single_object_name = $this->inflector->singularize(
+                $this->model->getTable()
+            );
+
             $object->fill($re_encoded_array);
             $object->save();
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . Inflector::singularize(
-                    $this->model->getTable()
-                ) . ' was replaced.';
-            $this->json_api_response_array[Inflector::singularize($this->model->getTable())] = $object->getApiFilter(
+            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was replaced.';
+            $this->json_api_response_array[$single_object_name] = $object->getApiFilter(
                 $object
             );
         }
@@ -464,7 +660,7 @@ trait ApiJsonDefaultTrait
      */
     public function jsonElementDelete(Request $request, int $id): JsonResponse
     {
-        $object = $this->controller_model::find($id ?? 0);
+        $object = $this->getControllerModel()::find($id ?? 0);
 
         if (!$object) {
             $this->json_api_response_array['status'] = '404';
@@ -472,12 +668,18 @@ trait ApiJsonDefaultTrait
         } else {
             $object->delete();
 
+            $single_object_name = $this->inflector->singularize(
+                $this->model->getTable()
+            );
+
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' was deleted.';
+            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was deleted.';
         }
 
         return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
     }
+
+    // Other functionality
 
     /**
      * Parses an input array in the form of a JSON API request, returning the attributes key.
@@ -501,5 +703,20 @@ trait ApiJsonDefaultTrait
         }
 
         return $re_encoded_array;
+    }
+
+    /**
+     * Singularizes the url, defaulting to $this->getUrlBase() if not supplied
+     *
+     * @param string|null $url
+     * @return string
+     */
+    private function singularizeUrl(?string $url = null): string
+    {
+        if (!$url) {
+            $url = $this->getUrlBase();
+        }
+
+        return str_replace($this->getModelNamePlural(), $this->getModelNameSingular(), $url);
     }
 }

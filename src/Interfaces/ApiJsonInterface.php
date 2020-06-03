@@ -94,9 +94,10 @@ interface ApiJsonInterface
      * Replaces the entire collection
      * "Replace the entire collection with another collection."
      *
+     * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionReplace(): JsonResponse;
+    public function jsonCollectionReplace(Request $request): JsonResponse;
 
     /**
      * Replaces an element
@@ -114,9 +115,10 @@ interface ApiJsonInterface
      * Update an entire collection
      * "Update all the representations of the member resources of the collection resource."
      *
+     * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionUpdate(): JsonResponse;
+    public function jsonCollectionUpdate(Request $request): JsonResponse;
 
     /**
      * Updates an element

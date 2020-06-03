@@ -128,9 +128,10 @@ trait ApiJson501Trait
      * Replaces the entire collection
      * "Replace the entire collection with another collection."
      *
+     * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionReplace(): JsonResponse
+    public function jsonCollectionReplace(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -154,9 +155,10 @@ trait ApiJson501Trait
      * Updates the entire collection
      * "Update all the representations of the member resources of the collection resource."
      *
+     * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionUpdate(): JsonResponse
+    public function jsonCollectionUpdate(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }

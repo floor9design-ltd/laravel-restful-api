@@ -245,10 +245,10 @@ trait ApiJsonDefaultTrait
      * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
-     * @param int $id Object id
+     * @param $id Object id
      * @return JsonResponse json response
      */
-    public function jsonDetails(Request $request, int $id): JsonResponse
+    public function jsonDetails(Request $request, $id): JsonResponse
     {
         $object = $this->getControllerModel()::find($id ?? 0);
         $status = null;
@@ -355,10 +355,10 @@ trait ApiJsonDefaultTrait
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCreateById(Request $request, int $id): JsonResponse
+    public function jsonCreateById(Request $request, $id): JsonResponse
     {
         // Using an ID to specifically create an item is unusually, as people normally can't guarantee the database state
         // This causes validator issues. An often used validator rule is something like:
@@ -496,10 +496,10 @@ trait ApiJsonDefaultTrait
      * "Replace the usered member of the collection, or if it does not exist, create it."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, int $id): JsonResponse
+    public function jsonElementReplace(Request $request, $id): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -680,10 +680,10 @@ trait ApiJsonDefaultTrait
      * "Update all the representations of the member resource, or may create the member resource if it does not exist."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementUpdate(Request $request, int $id): JsonResponse
+    public function jsonElementUpdate(Request $request, $id): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -725,7 +725,7 @@ trait ApiJsonDefaultTrait
      * Delete the entire collection.
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
     public function jsonCollectionDelete(Request $request): JsonResponse
@@ -743,10 +743,10 @@ trait ApiJsonDefaultTrait
      * Delete the element.
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementDelete(Request $request, int $id): JsonResponse
+    public function jsonElementDelete(Request $request, $id): JsonResponse
     {
         $object = $this->getControllerModel()::find($id ?? 0);
 

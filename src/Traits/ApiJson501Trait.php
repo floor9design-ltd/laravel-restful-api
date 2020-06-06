@@ -87,10 +87,10 @@ trait ApiJson501Trait
      * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
-     * @param int $id Object id
+     * @param $id Object id
      * @return JsonResponse json response
      */
-    public function jsonDetails(Request $request, int $id): JsonResponse
+    public function jsonDetails(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -114,10 +114,10 @@ trait ApiJson501Trait
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCreateById(Request $request, int $id): JsonResponse
+    public function jsonCreateById(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -141,10 +141,10 @@ trait ApiJson501Trait
      * "Replace the addressed member of the collection, or if it does not exist, create it."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, int $id): JsonResponse
+    public function jsonElementReplace(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -168,10 +168,10 @@ trait ApiJson501Trait
      * "Update all the representations of the member resource, or may create the member resource if it does not exist."
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementUpdate(Request $request, int $id): JsonResponse
+    public function jsonElementUpdate(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -194,10 +194,10 @@ trait ApiJson501Trait
      * Delete the element.
      *
      * @param Request $request
-     * @param int $id
+     * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementDelete(Request $request, int $id): JsonResponse
+    public function jsonElementDelete(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }

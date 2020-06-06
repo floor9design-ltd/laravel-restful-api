@@ -436,8 +436,8 @@ trait ApiJsonDefaultTrait
         // instantiate object to help with validation:
         $object = new $this->model();
 
-        // drop the existing collections
-        $this->model::query()->delete();
+        // drop the existing collections: has to be a force to ensure no validation errors
+        $this->model::query()->forceDelete();
 
         // Cycle over the array and check validation:
         foreach ($re_encoded_array as $collection_item) {
@@ -599,6 +599,7 @@ trait ApiJsonDefaultTrait
                 $object_ids[] = $collection_item['id'];
             }
         }
+
         $object_collection = $this->model::whereIn('id', $object_ids)->get();
 
         // instantiate object to help with validation:
@@ -771,21 +772,52 @@ trait ApiJsonDefaultTrait
 
     /**
      * Parses an input array in the form of a JSON API request, returning the attributes key.
-     * Also prepares json fields for database writing
+     * Also:
+     *     prepares json fields for database writing
+     *     reintroduces id so that this can be parsed for create/updates
      *
      * @param array $array
-     * @return array
+     * @return array An item (in array form), OR an array of items (in array form)
      */
     public function extractJsonApiAttributes(array $array): array
     {
         $re_encoded_array = [];
 
-        if ($array['data']['attributes'] ?? 0) {
+        if ($array['data']['attributes'] ?? false) {
+            // single object
+
+            // note, an ID of 0 will not be found, thus still generates a create when required (which is desired functionality)
+            $re_encoded_array['id'] = $array['data']['id'];
+
             foreach ($array['data']['attributes'] as $key => $value) {
                 if (Str::contains($key, 'json')) {
                     $re_encoded_array[$key] = json_encode($value);
                 } else {
                     $re_encoded_array[$key] = $value;
+                }
+            }
+        } elseif (
+            is_array($array['data']) &&
+            array_values($array['data'])[0]['attributes'] ?? false
+        ) {
+            // array object - parse over each item
+            foreach ($array['data'] as $data_item) {
+                $data_item_array = [];
+                if ($data_item['id'] ?? false) {
+                    $data_item_array['id'] = $data_item['id'];
+                }
+
+                foreach ($data_item['attributes'] ?? [] as $key => $value) {
+                    if (Str::contains($key, 'json')) {
+                        $data_item_array[$key] = json_encode($value);
+                    } else {
+                        $data_item_array[$key] = $value;
+                    }
+                }
+
+                // only include it if correct formatting items were found
+                if (count($data_item_array)) {
+                    $re_encoded_array[] = $data_item_array;
                 }
             }
         }

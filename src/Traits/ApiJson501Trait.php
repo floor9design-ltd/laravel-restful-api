@@ -164,7 +164,7 @@ trait ApiJson501Trait
     }
 
     /**
-     * Replaces an element
+     * Updates an element
      * "Update all the representations of the member resource, or may create the member resource if it does not exist."
      *
      * @param Request $request

@@ -435,12 +435,11 @@ trait ApiJsonDefaultTrait
 
         // instantiate object to help with validation:
         $object = new $this->model();
-        $new_collection = [];
 
         // drop the existing collections
         $this->model::query()->delete();
 
-        // Cycle over the array and add collection items:
+        // Cycle over the array and check validation:
         foreach ($re_encoded_array as $collection_item) {
             $validator = Validator::make(
                 $collection_item,
@@ -483,7 +482,7 @@ trait ApiJsonDefaultTrait
 
             $this->json_api_response_array['meta']['count'] = 1;
 
-            $status = $this->json_api_response_array['meta']['status'] = '200';
+            $status = $this->json_api_response_array['meta']['status'] = '201';
             $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular(
                 ) . ' collection was replaced.';
             $this->json_api_response_array['meta']['count'] = count($re_encoded_array);
@@ -570,7 +569,7 @@ trait ApiJsonDefaultTrait
 
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
-            $status = $this->json_api_response_array['meta']['status'] = "200";
+            $status = $this->json_api_response_array['meta']['status'] = "201";
             $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular(
                 ) . ' was replaced.';
             $this->json_api_response_array['meta']['count'] = 1;
@@ -581,11 +580,104 @@ trait ApiJsonDefaultTrait
 
     // PATCH
 
-    // jsonCollectionUpdate
+    /**
+     * Update an entire collection
+     * "Update all the representations of the member resources of the collection resource."
+     *
+     * @param Request $request
+     * @return JsonResponse json response
+     */
+    public function jsonCollectionUpdate(Request $request): JsonResponse
+    {
+        // parse the request into an array:
+        $re_encoded_array = $this->extractJsonApiAttributes($request->all());
+
+        // to be efficient, load all items now and then use them this collection to parse over:
+        $object_ids = [];
+        foreach ($re_encoded_array as $collection_item) {
+            if ($collection_item['id'] ?? false) {
+                $object_ids[] = $collection_item['id'];
+            }
+        }
+        $object_collection = $this->model::whereIn('id', $object_ids)->get();
+
+        // instantiate object to help with validation:
+        $object = new $this->model();
+
+        // Cycle over the array and check validation:
+        foreach ($re_encoded_array as $collection_item) {
+            // if there's an existing object, find it from the $object_collection, else pass null as its a create
+            if ($collection_item['id'] ?? false) {
+                $validation_id = $object_collection->where('id', '=', $collection_item['id'])->find(
+                        $collection_item['id']
+                    ) ?? null;
+            } else {
+                $validation_id = null;
+            }
+
+            $validator = Validator::make(
+                $collection_item,
+                $object->getValidation($validation_id)
+            );
+
+            $failed = false;
+            if ($validator->fails()) {
+                foreach ($validator->errors()->all() as $field_errors) {
+                    $this->json_api_response_array['errors'][] = [
+                        'status' => '422',
+                        'title' => 'Input validation has failed',
+                        'detail' => $field_errors,
+                        'data' => $collection_item
+                    ];
+                }
+
+                unset($this->json_api_response_array['meta']);
+                unset($this->json_api_response_array['data']);
+
+                $status = $this->json_api_response_array['errors'][0]['status'];
+                $failed = true;
+
+                break;
+            }
+        }
+
+        // if there's no errors:
+        if (!$failed) {
+            unset($this->json_api_response_array['errors']);
+
+            foreach ($re_encoded_array as $collection_item) {
+                // if there's an existing object, find it from the $object_collection, else its a create
+
+                if ($collection_item['id'] ?? false) {
+                    $object = $object_collection->where('id', '=', $collection_item['id'])->find(
+                            $collection_item['id']
+                        ) ?? null;
+                } else {
+                    $object = new $this->model();
+                }
+
+                if (!$object) {
+                    $object = new $this->model();
+                }
+
+                $object->fill($collection_item);
+                $object->save();
+            }
+
+            $this->json_api_response_array['meta']['count'] = 1;
+
+            $status = $this->json_api_response_array['meta']['status'] = '200';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular(
+                ) . ' collection was updated.';
+            $this->json_api_response_array['meta']['count'] = count($re_encoded_array);
+        }
+
+        return Response::json($this->json_api_response_array, $status);
+    }
 
     /**
-     * Replaces an element
-     * "Replace the usered member of the collection, or if it does not exist, create it."
+     * Updates an element
+     * "Update all the representations of the member resource, or may create the member resource if it does not exist."
      *
      * @param Request $request
      * @param int $id
@@ -598,7 +690,7 @@ trait ApiJsonDefaultTrait
         $re_encoded_array['id'] = $id;
 
         // Now we have that, load the model
-        $object = $this->getControllerModel()::find($id);
+        $object = $this->model::find($id);
 
         // if there's no object, instantiate one to help with validation:
         if (!$object) {
@@ -615,15 +707,11 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['detail'] = 'Input validation has failed.';
             $this->json_api_response_array['validator_errors'] = $validator->errors();
         } else {
-            $single_object_name = $this->inflector->singularize(
-                $this->model->getTable()
-            );
-
             $object->fill($re_encoded_array);
             $object->save();
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was replaced.';
-            $this->json_api_response_array[$single_object_name] = $object->getApiFilter(
+            $this->json_api_response_array['detail'] = 'The ' . $this->getModelNameSingular() . ' was replaced.';
+            $this->json_api_response_array[$this->getModelNameSingular()] = $object->getApiFilter(
                 $object
             );
         }

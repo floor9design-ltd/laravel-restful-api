@@ -1,8 +1,8 @@
 <?php
 /**
- * Json501TraitTest.php
+ * JsonApi501TraitTest.php
  *
- * Json501TraitTest class
+ * JsonApi501TraitTest class
  *
  * php 7.1+
  *
@@ -26,7 +26,7 @@ use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 
 /**
- * Json501TraitTest
+ * JsonApi501TraitTest
  *
  * This test file tests the RESTful API routes generically.
  * This is a low level/internal functional test.
@@ -42,7 +42,7 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class Json501TraitTest extends TestCase
+class JsonApi501TraitTest extends TestCase
 {
 
     /**
@@ -50,7 +50,7 @@ class Json501TraitTest extends TestCase
      *
      * @return void
      */
-    public function testJson501Trait()
+    public function testJsonApi501Trait()
     {
         $test = new class {
             use JsonApi501Trait;

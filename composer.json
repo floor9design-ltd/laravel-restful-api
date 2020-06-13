@@ -35,7 +35,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Floor9design\\LaravelRestfulApi\\": "src"
+            "Floor9design\\LaravelRestfulApi\\": "src",
+            "Floor9design\\LaravelRestfulApi\\Tests\\": "tests"
         }
     },
     "config": {

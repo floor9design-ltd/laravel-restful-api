@@ -27,7 +27,7 @@ use Illuminate\Http\Request;
  * Interface JsonApiInterface
  *
  * Interface to force all ApiJson requests to cover all methods.
- * Should be used with JsonTrait which implements these in a default (but not necessarily useful) way.
+ * Should be used with JsonApiTrait which implements these in a default (but not necessarily useful) way.
  *
  * These match the definitions on Wikipedia.
  *
@@ -47,7 +47,7 @@ interface JsonApiInterface
     // GET
 
     /**
-     * The json version of the index screen
+     * The json api version of the index screen
      * "List the URIs and perhaps other details of the collection's members"
      *
      * @param Request $request Laravel Request object
@@ -56,7 +56,7 @@ interface JsonApiInterface
     public function jsonApiIndex(Request $request): JsonResponse;
 
     /**
-     * The json version of the detail screen
+     * The json api version of the detail screen
      * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
@@ -68,7 +68,7 @@ interface JsonApiInterface
     // POST
 
     /**
-     * The json version of the create feature
+     * The json api version of the create feature
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
@@ -77,7 +77,7 @@ interface JsonApiInterface
     public function jsonApiCreate(Request $request): JsonResponse;
 
     /**
-     * The json version of the create feature
+     * The json api version of the create feature
      * "Create a member resource in the member resource using the instructions in the request body."
      *
      * This is interpreted as a "create with specified ID"

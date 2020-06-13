@@ -22,8 +22,8 @@
 namespace Floor9design\LaravelRestfulApi\Tests\Functional;
 
 use Floor9design\LaravelRestfulApi\Models\User;
-use Floor9design\LaravelRestfulApi\Traits\JsonDefaultTrait;
-use Floor9design\LaravelRestfulApi\Traits\JsonTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApiDefaultTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApiTrait;
 use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 
@@ -53,8 +53,8 @@ class JsonDefaultTraitTest extends TestCase
     {
         // Set up a mock trait in a class
         $test_controller = new class {
-            use JsonDefaultTrait;
-            use JsonTrait;
+            use JsonApiDefaultTrait;
+            use JsonApiTrait;
         };
 
         $model = new User();
@@ -78,14 +78,12 @@ class JsonDefaultTraitTest extends TestCase
         $this->assertSame($url_base, $test_controller->getUrlBase());
     }
 
-
-
     // GET
 
-    //jsonIndex
+    //jsonApiIndex
 
     /**
-     * Test JsonDefaultTrait:JsonIndex.
+     * Test JsonApiDefaultTrait:JsonIndex.
      *
      * @return void
      */
@@ -137,14 +135,14 @@ class JsonDefaultTraitTest extends TestCase
             ]
         );
 
-        $user_response = $test_controller->jsonIndex($request_user);
+        $user_response = $test_controller->jsonApiIndex($request_user);
         $this->assertEquals($api_user_response, $user_response->getContent());
     }
 
-    // jsonDetails
+    // jsonApiDetails
 
     /**
-     * Test JsonDefaultTrait:JsonDetails.
+     * Test JsonApiDefaultTrait:JsonDetails.
      *
      * @return void
      */
@@ -170,12 +168,12 @@ class JsonDefaultTraitTest extends TestCase
         );
 
         // 404
-        $response_404 = $test_controller->jsonDetails($request_404, 0);
+        $response_404 = $test_controller->jsonApiDetails($request_404, 0);
         $this->assertEquals($api_404_response, $response_404->getContent());
     }
 
     /**
-     * Test JsonDefaultTrait:JsonDetails.
+     * Test JsonApiDefaultTrait:JsonDetails.
      *
      * @return void
      */
@@ -212,33 +210,33 @@ class JsonDefaultTraitTest extends TestCase
             ]
         );
 
-        $user_response = $test_controller->jsonDetails($request_user, 1);
+        $user_response = $test_controller->jsonApiDetails($request_user, 1);
         $this->assertEquals($api_user_response, $user_response->getContent());
     }
 
     // CREATE
 
-    // jsonCreate
+    // jsonApiCreate
 
-    // jsonCreateById
+    // jsonApiCreateById
 
     // PUT
 
-    // jsonCollectionReplace
+    // jsonApiCollectionReplace
 
-    // jsonElementReplace
+    // jsonApiElementReplace
 
     // PATCH
 
-    // jsonCollectionUpdate
+    // jsonApiCollectionUpdate
 
-    // jsonElementUpdate
+    // jsonApiElementUpdate
 
     // DELETE
 
-    // jsonCollectionDelete
+    // jsonApiCollectionDelete
 
-    // jsonElementDelete
+    // jsonApiElementDelete
 
     // Other functionality
 
@@ -248,8 +246,8 @@ class JsonDefaultTraitTest extends TestCase
     private function setUpUserClass()
     {
         return new class {
-            use JsonDefaultTrait;
-            use JsonTrait;
+            use JsonApiDefaultTrait;
+            use JsonApiTrait;
 
             public function __construct()
             {

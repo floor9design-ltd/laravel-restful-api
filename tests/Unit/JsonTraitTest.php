@@ -21,7 +21,7 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
-use Floor9design\LaravelRestfulApi\Traits\JsonTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApiTrait;
 use Orchestra\Testbench\TestCase;
 
 /**
@@ -51,7 +51,7 @@ class JsonTraitTest extends TestCase
     public function testGetMaximumResponseNumber()
     {
         $test = new class {
-            use JsonTrait;
+            use JsonApiTrait;
         };
 
         // maximum pagination amount
@@ -59,14 +59,14 @@ class JsonTraitTest extends TestCase
     }
 
     /**
-     * Test the JsonTrait preset array
+     * Test the JsonApiTrait preset array
      *
      * @return void
      */
     public function testGetJsonApiResponseArray()
     {
         $test = new class {
-            use JsonTrait;
+            use JsonApiTrait;
         };
 
         // Ensure the base response values are set up:

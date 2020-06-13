@@ -1,8 +1,8 @@
 <?php
 /**
- * Json501Trait.php
+ * JsonApi501Trait.php
  *
- * Json501Trait trait
+ * JsonApi501Trait trait
  *
  * php 7.0+
  *
@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 /**
- * Trait Json501Trait
+ * Trait JsonApi501Trait
  *
  * Trait to give the base responses for all classes.
  *
@@ -45,7 +45,7 @@ use Illuminate\Support\Facades\Response;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait Json501Trait
+trait JsonApi501Trait
 {
 
     /**
@@ -71,26 +71,26 @@ trait Json501Trait
     // GET
 
     /**
-     * The json version of the index screen
+     * The json api version of the index screen
      * "List the URIs and perhaps other details of the collection's members"
      *
      * @param Request $request Laravel Request object
      * @return JsonResponse json response
      */
-    public function jsonIndex(Request $request): JsonResponse
+    public function jsonApiIndex(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
-     * The json version of the detail screen
+     * The json api version of the detail screen
      * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
      * @param $id Object id
      * @return JsonResponse json response
      */
-    public function jsonDetails(Request $request, $id): JsonResponse
+    public function jsonApiDetails(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -98,26 +98,26 @@ trait Json501Trait
     // POST
 
     /**
-     * The json version of the create feature
+     * The json api version of the create feature
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCreate(Request $request): JsonResponse
+    public function jsonApiCreate(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
 
     /**
-     * The json version of the create feature
+     * The json api version of the create feature
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCreateById(Request $request, $id): JsonResponse
+    public function jsonApiCreateById(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -131,7 +131,7 @@ trait Json501Trait
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionReplace(Request $request): JsonResponse
+    public function jsonApiCollectionReplace(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -144,7 +144,7 @@ trait Json501Trait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, $id): JsonResponse
+    public function jsonApiElementReplace(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -158,7 +158,7 @@ trait Json501Trait
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionUpdate(Request $request): JsonResponse
+    public function jsonApiCollectionUpdate(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -171,7 +171,7 @@ trait Json501Trait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementUpdate(Request $request, $id): JsonResponse
+    public function jsonApiElementUpdate(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -185,7 +185,7 @@ trait Json501Trait
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionDelete(Request $request): JsonResponse
+    public function jsonApiCollectionDelete(Request $request): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }
@@ -197,7 +197,7 @@ trait Json501Trait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementDelete(Request $request, $id): JsonResponse
+    public function jsonApiElementDelete(Request $request, $id): JsonResponse
     {
         return Response::json($this->response, $this->response['errors'][0]['status']);
     }

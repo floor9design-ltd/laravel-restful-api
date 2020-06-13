@@ -21,7 +21,7 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Functional;
 
-use Floor9design\LaravelRestfulApi\Traits\Json501Trait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApi501Trait;
 use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 
@@ -53,7 +53,7 @@ class Json501TraitTest extends TestCase
     public function testJson501Trait()
     {
         $test = new class {
-            use Json501Trait;
+            use JsonApi501Trait;
         };
 
         // A correct json response:
@@ -78,24 +78,24 @@ class Json501TraitTest extends TestCase
         $request = $this->createMock(Request::class);
 
         // GET
-        $this->assertEquals($json_api_response, $test->jsonIndex($request)->getContent());
-        $this->assertEquals($json_api_response, $test->jsonDetails($request, 1)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiIndex($request)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiDetails($request, 1)->getContent());
 
         // POST
-        $this->assertEquals($json_api_response, $test->jsonCreate($request)->getContent());
-        $this->assertEquals($json_api_response, $test->jsonCreateById($request, 1)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiCreate($request)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiCreateById($request, 1)->getContent());
 
         // PUT
-        $this->assertEquals($json_api_response, $test->jsonCollectionReplace($request)->getContent());
-        $this->assertEquals($json_api_response, $test->jsonElementReplace($request, 1)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiCollectionReplace($request)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiElementReplace($request, 1)->getContent());
 
         // PATCH
-        $this->assertEquals($json_api_response, $test->jsonCollectionUpdate($request)->getContent());
-        $this->assertEquals($json_api_response, $test->jsonElementUpdate($request, 1)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiCollectionUpdate($request)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiElementUpdate($request, 1)->getContent());
 
         // DELETE
-        $this->assertEquals($json_api_response, $test->jsonCollectionDelete($request)->getContent());
-        $this->assertEquals($json_api_response, $test->jsonElementDelete($request, 1)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiCollectionDelete($request)->getContent());
+        $this->assertEquals($json_api_response, $test->jsonApiElementDelete($request, 1)->getContent());
     }
 
 }

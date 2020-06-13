@@ -1,8 +1,8 @@
 <?php
 /**
- * JsonTrait.php
+ * JsonApiTrait.php
  *
- * JsonTrait trait
+ * JsonApiTrait trait
  *
  * php 7.0+
  *
@@ -21,7 +21,7 @@
 namespace Floor9design\LaravelRestfulApi\Traits;
 
 /**
- * Trait JsonTrait
+ * Trait JsonApiTrait
  *
  * Trait to offer methods/properties for all Api requests.
  *
@@ -36,7 +36,7 @@ namespace Floor9design\LaravelRestfulApi\Traits;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait JsonTrait
+trait JsonApiTrait
 {
     /**
      * A clean array to populate, including the main required elements

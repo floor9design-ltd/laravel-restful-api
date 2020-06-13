@@ -1,8 +1,8 @@
 <?php
 /**
- * JsonDefaultTrait.php
+ * JsonApiDefaultTrait.php
  *
- * JsonDefaultTrait trait
+ * JsonApiDefaultTrait trait
  *
  * php 7.0+
  *
@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 /**
- * Trait JsonDefaultTrait
+ * Trait JsonApiDefaultTrait
  *
  * Trait to give the base responses for all classes.
  *
@@ -47,7 +47,7 @@ use Illuminate\Support\Str;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait JsonDefaultTrait
+trait JsonApiDefaultTrait
 {
     /**
      * @var Object the model exposed by the controller
@@ -88,7 +88,7 @@ trait JsonDefaultTrait
 
     /**
      * @param Object $model
-     * @return JsonDefaultTrait
+     * @return JsonApiDefaultTrait
      * @see $model
      *
      */
@@ -110,7 +110,7 @@ trait JsonDefaultTrait
 
     /**
      * @param string $controller_model
-     * @return JsonDefaultTrait
+     * @return JsonApiDefaultTrait
      * @see $controller_model
      *
      */
@@ -132,7 +132,7 @@ trait JsonDefaultTrait
 
     /**
      * @param string $model_name_singular
-     * @return JsonDefaultTrait
+     * @return JsonApiDefaultTrait
      * @see $model_name_singular
      *
      */
@@ -154,7 +154,7 @@ trait JsonDefaultTrait
 
     /**
      * @param string $model_name_plural
-     * @return JsonDefaultTrait
+     * @return JsonApiDefaultTrait
      * @see $model_name_plural
      *
      */
@@ -176,7 +176,7 @@ trait JsonDefaultTrait
 
     /**
      * @param string $url_base
-     * @return JsonDefaultTrait
+     * @return JsonApiDefaultTrait
      * @see $url_base
      *
      */
@@ -191,13 +191,13 @@ trait JsonDefaultTrait
     // GET
 
     /**
-     * The json version of the index screen
+     * The json api version of the index screen
      * "List the URIs and perhaps other details of the collection's members"
      *
      * @param Request $request Laravel Request object
      * @return JsonResponse json response
      */
-    public function jsonIndex(Request $request): JsonResponse
+    public function jsonApiIndex(Request $request): JsonResponse
     {
         $objects = $this->getControllerModel()::paginate($this->maximum_response_number);
 
@@ -237,14 +237,14 @@ trait JsonDefaultTrait
     }
 
     /**
-     * The json version of the detail screen
+     * The json api version of the detail screen
      * "Retrieve a representation of the addressed member of the collection"
      *
      * @param Request $request Laravel Request object
      * @param $id Object id
      * @return JsonResponse json response
      */
-    public function jsonDetails(Request $request, $id): JsonResponse
+    public function jsonApiDetails(Request $request, $id): JsonResponse
     {
         $object = $this->getControllerModel()::find($id ?? 0);
         $status = null;
@@ -290,13 +290,13 @@ trait JsonDefaultTrait
     // CREATE
 
     /**
-     * The json version of the create feature
+     * The json api version of the create feature
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCreate(Request $request): JsonResponse
+    public function jsonApiCreate(Request $request): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -347,14 +347,14 @@ trait JsonDefaultTrait
     }
 
     /**
-     * The json version of the create feature, specified by id
+     * The json api version of the create feature, specified by id
      * "Create a new entry in the collection. The new entry's URI is assigned automatically."
      *
      * @param Request $request
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCreateById(Request $request, $id): JsonResponse
+    public function jsonApiCreateById(Request $request, $id): JsonResponse
     {
         // Using an ID to specifically create an item is unusually, as people normally can't guarantee the database state
         // This causes validator issues. An often used validator rule is something like:
@@ -424,7 +424,7 @@ trait JsonDefaultTrait
      *
      * @return JsonResponse json response
      */
-    public function jsonCollectionReplace(Request $request): JsonResponse
+    public function jsonApiCollectionReplace(Request $request): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -495,7 +495,7 @@ trait JsonDefaultTrait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, $id): JsonResponse
+    public function jsonApiElementReplace(Request $request, $id): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -583,7 +583,7 @@ trait JsonDefaultTrait
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionUpdate(Request $request): JsonResponse
+    public function jsonApiCollectionUpdate(Request $request): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -680,7 +680,7 @@ trait JsonDefaultTrait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementUpdate(Request $request, $id): JsonResponse
+    public function jsonApiElementUpdate(Request $request, $id): JsonResponse
     {
         // parse the request into an array:
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
@@ -725,7 +725,7 @@ trait JsonDefaultTrait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCollectionDelete(Request $request): JsonResponse
+    public function jsonApiCollectionDelete(Request $request): JsonResponse
     {
         $this->model::query()->delete();
 
@@ -743,7 +743,7 @@ trait JsonDefaultTrait
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementDelete(Request $request, $id): JsonResponse
+    public function jsonApiElementDelete(Request $request, $id): JsonResponse
     {
         $object = $this->getControllerModel()::find($id ?? 0);
 

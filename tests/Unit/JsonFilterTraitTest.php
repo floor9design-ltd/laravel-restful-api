@@ -21,7 +21,7 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
-use Floor9design\LaravelRestfulApi\Traits\JsonFilterTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApiFilterTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Orchestra\Testbench\TestCase;
@@ -29,7 +29,7 @@ use Orchestra\Testbench\TestCase;
 /**
  * JsonFilterTraitTest
  *
- * This test file tests the JsonFilterTrait.
+ * This test file tests the JsonApiFilterTrait.
  *
  * @category  None
  * @package   Floor9design\LaravelRestfulApi\Tests\Unit
@@ -46,7 +46,7 @@ class JsonFilterTraitTest extends TestCase
 {
 
     /**
-     * Test the JsonFilterTrait.
+     * Test the JsonApiFilterTrait.
      *
      * @return void
      */
@@ -67,7 +67,7 @@ class JsonFilterTraitTest extends TestCase
         }
 
         $test = new class extends Model {
-            use JsonFilterTrait;
+            use JsonApiFilterTrait;
 
             var $api_array_filter = [];
         };

@@ -1,8 +1,8 @@
 <?php
 /**
- * JsonFilterTrait.php
+ * JsonApiFilterTrait.php
  *
- * JsonFilterTrait trait
+ * JsonApiFilterTrait trait
  *
  * php 7.0+
  *
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
- * Trait JsonFilterTrait
+ * Trait JsonApiFilterTrait
  *
  * Trait to allow the base API o filter on object's structure, correctly parsing it into an array.
  * This catches elements, such as JSON, and correctly parses them for the returning.
@@ -40,7 +40,7 @@ use Illuminate\Support\Str;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait JsonFilterTrait
+trait JsonApiFilterTrait
 {
     /**
      * Parse over an Object and convert it to an array suitable for the API to present

@@ -20,10 +20,10 @@
 
 namespace Floor9design\LaravelRestfulApi\Models;
 
-use Floor9design\LaravelRestfulApi\Traits\ApiFilterTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonFilterTrait;
+use Floor9design\LaravelRestfulApi\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\Rule;
 
 /**
  * Class User
@@ -47,7 +47,7 @@ use Illuminate\Validation\Rule;
  */
 class User extends Model
 {
-    use ApiFilterTrait;
+    use JsonFilterTrait, ValidationTrait;
 
     /**
      * Example test data
@@ -162,14 +162,4 @@ class User extends Model
         return 'users';
     }
 
-    // Other functionality
-
-    /**
-     * @return array
-     */
-    public function getValidation($user = null)
-    {
-        // No need to test validation
-        return [];
-    }
 }

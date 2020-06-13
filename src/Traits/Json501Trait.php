@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJson501Trait.php
+ * Json501Trait.php
  *
- * ApiJson501Trait trait
+ * Json501Trait trait
  *
  * php 7.0+
  *
@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 /**
- * Trait ApiJson501Trait
+ * Trait Json501Trait
  *
  * Trait to give the base responses for all classes.
  *
@@ -45,7 +45,7 @@ use Illuminate\Support\Facades\Response;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait ApiJson501Trait
+trait Json501Trait
 {
 
     /**

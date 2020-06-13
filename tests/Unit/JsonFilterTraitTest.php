@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiFilterTraitTest.php
+ * JsonFilterTraitTest.php
  *
- * ApiFilterTraitTest class
+ * JsonFilterTraitTest class
  *
  * php 7.1+
  *
@@ -21,15 +21,15 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
-use Floor9design\LaravelRestfulApi\Traits\ApiFilterTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonFilterTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Orchestra\Testbench\TestCase;
 
 /**
- * ApiFilterTraitTest
+ * JsonFilterTraitTest
  *
- * This test file tests the ApiFilterTrait.
+ * This test file tests the JsonFilterTrait.
  *
  * @category  None
  * @package   Floor9design\LaravelRestfulApi\Tests\Unit
@@ -42,17 +42,17 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class ApiFilterTraitTest extends TestCase
+class JsonFilterTraitTest extends TestCase
 {
 
     /**
-     * Test the ApiFilterTrait.
+     * Test the JsonFilterTrait.
      *
      * @return void
      */
-    public function testGetApiFilter()
+    public function testGetJsonFilter()
     {
-        // manually set up an object with values and expose them using $test->api_array_filter
+        // manually set up an object with values and expose them using $test->array_filter
         $data = [
             'test_date' => date('Y-m-d'),
             'test_string' => Hash::make('Some test text'),
@@ -67,7 +67,7 @@ class ApiFilterTraitTest extends TestCase
         }
 
         $test = new class extends Model {
-            use ApiFilterTrait;
+            use JsonFilterTrait;
 
             var $api_array_filter = [];
         };
@@ -78,7 +78,7 @@ class ApiFilterTraitTest extends TestCase
         }
 
         // Now extract it using the function:
-        $processed = $test->getApiFilter($test);
+        $processed = $test->getJsonFilter($test);
 
         // Check the pass throughs
         $this->assertEquals($data['test_date'], $processed['test_date']);

@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJson501TraitTest.php
+ * Json501TraitTest.php
  *
- * ApiJson501TraitTest class
+ * Json501TraitTest class
  *
  * php 7.1+
  *
@@ -21,12 +21,12 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Functional;
 
-use Floor9design\LaravelRestfulApi\Traits\ApiJson501Trait;
+use Floor9design\LaravelRestfulApi\Traits\Json501Trait;
 use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 
 /**
- * ApiJson501TraitTest
+ * Json501TraitTest
  *
  * This test file tests the RESTful API routes generically.
  * This is a low level/internal functional test.
@@ -42,18 +42,18 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class ApiJson501TraitTest extends TestCase
+class Json501TraitTest extends TestCase
 {
 
     /**
-     * Test the ApiJson501Trait.
+     * Test the responses for all methods.
      *
      * @return void
      */
-    public function testApiJson501Trait()
+    public function testJson501Trait()
     {
         $test = new class {
-            use ApiJson501Trait;
+            use Json501Trait;
         };
 
         // A correct json response:

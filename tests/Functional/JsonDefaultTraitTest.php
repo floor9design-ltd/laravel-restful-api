@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJsonDefaultTraitTest.php
+ * JsonDefaultTraitTest.php
  *
- * ApiJsonDefaultTraitTest class
+ * JsonDefaultTraitTest class
  *
  * php 7.1+
  *
@@ -22,13 +22,13 @@
 namespace Floor9design\LaravelRestfulApi\Tests\Functional;
 
 use Floor9design\LaravelRestfulApi\Models\User;
-use Floor9design\LaravelRestfulApi\Traits\ApiJsonDefaultTrait;
-use Floor9design\LaravelRestfulApi\Traits\ApiJsonTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonDefaultTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonTrait;
 use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 
 /**
- * ApiJsonDefaultTraitTest
+ * JsonDefaultTraitTest
  *
  * This test file tests the RESTful API routes generically.
  * This is a low level/internal functional test.
@@ -45,7 +45,7 @@ use Orchestra\Testbench\TestCase;
  * @see       \Floor9design\LaravelRestfulApi\Models\User
  * @since     File available since Release 1.0
  */
-class ApiJsonDefaultTraitTest extends TestCase
+class JsonDefaultTraitTest extends TestCase
 {
 
     // Background functionality tests
@@ -53,8 +53,8 @@ class ApiJsonDefaultTraitTest extends TestCase
     {
         // Set up a mock trait in a class
         $test_controller = new class {
-            use ApiJsonDefaultTrait;
-            use ApiJsonTrait;
+            use JsonDefaultTrait;
+            use JsonTrait;
         };
 
         $model = new User();
@@ -85,7 +85,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     //jsonIndex
 
     /**
-     * Test ApiJsonDefaultTrait:JsonIndex.
+     * Test JsonDefaultTrait:JsonIndex.
      *
      * @return void
      */
@@ -144,7 +144,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     // jsonDetails
 
     /**
-     * Test ApiJsonDefaultTrait:JsonDetails.
+     * Test JsonDefaultTrait:JsonDetails.
      *
      * @return void
      */
@@ -175,7 +175,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     }
 
     /**
-     * Test ApiJsonDefaultTrait:JsonDetails.
+     * Test JsonDefaultTrait:JsonDetails.
      *
      * @return void
      */
@@ -248,8 +248,8 @@ class ApiJsonDefaultTraitTest extends TestCase
     private function setUpUserClass()
     {
         return new class {
-            use ApiJsonDefaultTrait;
-            use ApiJsonTrait;
+            use JsonDefaultTrait;
+            use JsonTrait;
 
             public function __construct()
             {

@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJsonInterface.php
+ * JsonApiInterface.php
  *
- * ApiJsonInterface trait
+ * JsonApiInterface trait
  *
  * php 7.0+
  *
@@ -24,10 +24,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Interface ApiJsonInterface
+ * Interface JsonApiInterface
  *
  * Interface to force all ApiJson requests to cover all methods.
- * Should be used with ApiJsonTrait which implements these in a default (but not necessarily useful) way.
+ * Should be used with JsonTrait which implements these in a default (but not necessarily useful) way.
  *
  * These match the definitions on Wikipedia.
  *
@@ -42,7 +42,7 @@ use Illuminate\Http\Request;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-interface ApiJsonInterface
+interface JsonApiInterface
 {
     // GET
 
@@ -53,7 +53,7 @@ interface ApiJsonInterface
      * @param Request $request Laravel Request object
      * @return JsonResponse json response
      */
-    public function jsonIndex(Request $request): JsonResponse;
+    public function jsonApiIndex(Request $request): JsonResponse;
 
     /**
      * The json version of the detail screen
@@ -63,7 +63,7 @@ interface ApiJsonInterface
      * @param $id Object id;
      * @return JsonResponse json response
      */
-    public function jsonDetails(Request $request, $id): JsonResponse;
+    public function jsonApiDetails(Request $request, $id): JsonResponse;
 
     // POST
 
@@ -74,7 +74,7 @@ interface ApiJsonInterface
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCreate(Request $request): JsonResponse;
+    public function jsonApiCreate(Request $request): JsonResponse;
 
     /**
      * The json version of the create feature
@@ -86,7 +86,7 @@ interface ApiJsonInterface
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonCreateById(Request $request,$id): JsonResponse;
+    public function jsonApiCreateById(Request $request,$id): JsonResponse;
 
     // PUT
 
@@ -97,7 +97,7 @@ interface ApiJsonInterface
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionReplace(Request $request): JsonResponse;
+    public function jsonApiCollectionReplace(Request $request): JsonResponse;
 
     /**
      * Replaces an element
@@ -107,7 +107,7 @@ interface ApiJsonInterface
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementReplace(Request $request, $id): JsonResponse;
+    public function jsonApiElementReplace(Request $request, $id): JsonResponse;
 
     // PATCH
 
@@ -118,7 +118,7 @@ interface ApiJsonInterface
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionUpdate(Request $request): JsonResponse;
+    public function jsonApiCollectionUpdate(Request $request): JsonResponse;
 
     /**
      * Updates an element
@@ -128,7 +128,7 @@ interface ApiJsonInterface
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementUpdate(Request $request, $id): JsonResponse;
+    public function jsonApiElementUpdate(Request $request, $id): JsonResponse;
 
     // DELETE
 
@@ -139,7 +139,7 @@ interface ApiJsonInterface
      * @param Request $request
      * @return JsonResponse json response
      */
-    public function jsonCollectionDelete(Request $request): JsonResponse;
+    public function jsonApiCollectionDelete(Request $request): JsonResponse;
 
     /**
      * Delete the element.
@@ -149,6 +149,6 @@ interface ApiJsonInterface
      * @param $id
      * @return JsonResponse json response
      */
-    public function jsonElementDelete(Request $request, $id): JsonResponse;
+    public function jsonApiElementDelete(Request $request, $id): JsonResponse;
 
 }

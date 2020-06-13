@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJsonDefaultTrait.php
+ * JsonDefaultTrait.php
  *
- * ApiJsonDefaultTrait trait
+ * JsonDefaultTrait trait
  *
  * php 7.0+
  *
@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 /**
- * Trait ApiJsonDefaultTrait
+ * Trait JsonDefaultTrait
  *
  * Trait to give the base responses for all classes.
  *
@@ -47,7 +47,7 @@ use Illuminate\Support\Str;
  * @link      https://en.wikipedia.org/wiki/Representational_state_transfer#Relationship_between_URI_and_HTTP_methods
  * @since     File available since Release 1.0
  */
-trait ApiJsonDefaultTrait
+trait JsonDefaultTrait
 {
     /**
      * @var Object the model exposed by the controller
@@ -88,7 +88,7 @@ trait ApiJsonDefaultTrait
 
     /**
      * @param Object $model
-     * @return ApiJsonDefaultTrait
+     * @return JsonDefaultTrait
      * @see $model
      *
      */
@@ -110,7 +110,7 @@ trait ApiJsonDefaultTrait
 
     /**
      * @param string $controller_model
-     * @return ApiJsonDefaultTrait
+     * @return JsonDefaultTrait
      * @see $controller_model
      *
      */
@@ -132,7 +132,7 @@ trait ApiJsonDefaultTrait
 
     /**
      * @param string $model_name_singular
-     * @return ApiJsonDefaultTrait
+     * @return JsonDefaultTrait
      * @see $model_name_singular
      *
      */
@@ -154,7 +154,7 @@ trait ApiJsonDefaultTrait
 
     /**
      * @param string $model_name_plural
-     * @return ApiJsonDefaultTrait
+     * @return JsonDefaultTrait
      * @see $model_name_plural
      *
      */
@@ -176,7 +176,7 @@ trait ApiJsonDefaultTrait
 
     /**
      * @param string $url_base
-     * @return ApiJsonDefaultTrait
+     * @return JsonDefaultTrait
      * @see $url_base
      *
      */
@@ -227,7 +227,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getApiFilter($object),
+                'attributes' => $object->getJsonFilter($object),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name],
                 'relationships' => new \stdClass()
             ];
@@ -275,7 +275,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getApiFilter($object),
+                'attributes' => $object->getJsonFilter($object),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -332,7 +332,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getApiFilter($object),
+                'attributes' => $object->getJsonFilter($object),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -402,7 +402,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getApiFilter($object),
+                'attributes' => $object->getJsonFilter($object),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -559,7 +559,7 @@ trait ApiJsonDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getApiFilter($object),
+                'attributes' => $object->getJsonFilter($object),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -708,7 +708,7 @@ trait ApiJsonDefaultTrait
             $object->save();
             $this->json_api_response_array['status'] = '200';
             $this->json_api_response_array['detail'] = 'The ' . $this->getModelNameSingular() . ' was replaced.';
-            $this->json_api_response_array[$this->getModelNameSingular()] = $object->getApiFilter(
+            $this->json_api_response_array[$this->getModelNameSingular()] = $object->getJsonFilter(
                 $object
             );
         }

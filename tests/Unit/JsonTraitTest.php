@@ -1,8 +1,8 @@
 <?php
 /**
- * ApiJsonTraitTest.php
+ * JsonTraitTest.php
  *
- * ApiJsonTraitTest class
+ * JsonTraitTest class
  *
  * php 7.1+
  *
@@ -21,11 +21,11 @@
 
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
-use Floor9design\LaravelRestfulApi\Traits\ApiJsonTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonTrait;
 use Orchestra\Testbench\TestCase;
 
 /**
- * ApiJsonTraitTest
+ * JsonTraitTest
  *
  * This test file tests the RESTful API routes generically.
  *
@@ -40,7 +40,7 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class ApiJsonTraitTest extends TestCase
+class JsonTraitTest extends TestCase
 {
 
     /**
@@ -51,7 +51,7 @@ class ApiJsonTraitTest extends TestCase
     public function testGetMaximumResponseNumber()
     {
         $test = new class {
-            use ApiJsonTrait;
+            use JsonTrait;
         };
 
         // maximum pagination amount
@@ -59,14 +59,14 @@ class ApiJsonTraitTest extends TestCase
     }
 
     /**
-     * Test the ApiJsonTrait preset array
+     * Test the JsonTrait preset array
      *
      * @return void
      */
     public function testGetJsonApiResponseArray()
     {
         $test = new class {
-            use ApiJsonTrait;
+            use JsonTrait;
         };
 
         // Ensure the base response values are set up:

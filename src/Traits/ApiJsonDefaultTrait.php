@@ -216,13 +216,9 @@ trait ApiJsonDefaultTrait
             'next' => null
         ];
 
-        if ($objects->nextPageUrl()) {
-            $this->json_api_response_array['links']['next'] = $objects->nextPageUrl();
-        }
+        $this->json_api_response_array['links']['next'] = $objects->nextPageUrl() ?? null;
 
-        if ($objects->previousPageUrl()) {
-            $this->json_api_response_array['links']['prev'] = $objects->previousPageUrl();
-        }
+        $this->json_api_response_array['links']['prev'] = $objects->previousPageUrl() ?? null;
 
         // remember: even if the ID is not called "id", JSON API format requires that it be called that:
         $id_name = $this->model->getKeyName();

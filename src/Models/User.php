@@ -23,6 +23,7 @@ namespace Floor9design\LaravelRestfulApi\Models;
 use Floor9design\LaravelRestfulApi\Traits\ApiFilterTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\Rule;
 
 /**
  * Class User
@@ -54,18 +55,21 @@ class User extends Model
      * @var int
      */
     public $id = 1;
+
     /**
      * Example test data
      *
      * @var string
      */
     public $name = 'Rick';
+
     /**
      * Example test data
      *
      * @var string
      */
     public $email = 'rick@floor9design.com';
+
     /**
      * The attributes that are exposed to the API.
      *
@@ -126,7 +130,7 @@ class User extends Model
      * @param array $input
      * @return string
      */
-    public static function create(array $input) : string
+    public static function create(array $input): string
     {
         $response = null;
 
@@ -158,20 +162,14 @@ class User extends Model
         return 'users';
     }
 
+    // Other functionality
+
     /**
-     * This returns the validation
-     *
-     * @param array $uniques A list of unique elements that will be appended to the validation
      * @return array
      */
-    public static function getValidation(?array $uniques = null, ?int $id = null): array
+    public function getValidation($user = null)
     {
-        $validation = self::$validation;
-
-        foreach ($uniques ?? [] as $unique) {
-            $validation[$unique] .= ',' . $id;
-        }
-
-        return $validation;
+        // No need to test validation
+        return [];
     }
 }

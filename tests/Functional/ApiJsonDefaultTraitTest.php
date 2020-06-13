@@ -48,6 +48,38 @@ use Orchestra\Testbench\TestCase;
 class ApiJsonDefaultTraitTest extends TestCase
 {
 
+    // Background functionality tests
+    public function testAccessors()
+    {
+        // Set up a mock trait in a class
+        $test_controller = new class {
+            use ApiJsonDefaultTrait;
+            use ApiJsonTrait;
+        };
+
+        $model = new User();
+        $test_controller->setModel($model);
+        $this->assertSame($model, $test_controller->getModel());
+
+        $controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
+        $test_controller->setControllerModel($controller_model);
+        $this->assertSame($controller_model, $test_controller->getControllerModel());
+
+        $model_name_singular = 'user';
+        $test_controller->setModelNameSingular($model_name_singular);
+        $this->assertSame($model_name_singular, $test_controller->getModelNameSingular());
+
+        $model_name_plural = 'users';
+        $test_controller->setModelNamePlural($model_name_plural);
+        $this->assertSame($model_name_plural, $test_controller->getModelNamePlural());
+
+        $url_base = 'users';
+        $test_controller->setUrlBase($url_base);
+        $this->assertSame($url_base, $test_controller->getUrlBase());
+    }
+
+
+
     // GET
 
     //jsonIndex
@@ -60,17 +92,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     public function testJsonIndex()
     {
         // Set up a mock trait in a class
-        $test_controller = new class {
-            use ApiJsonDefaultTrait;
-            use ApiJsonTrait;
-
-            public function __construct()
-            {
-                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
-                $this->model = new User();
-                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
-            }
-        };
+        $test_controller = $this->setUpUserClass();
 
         // mock a request
         $request_user = $this->createMock(Request::class);
@@ -82,13 +104,13 @@ class ApiJsonDefaultTraitTest extends TestCase
         while ($i <= 200) {
             $users[] = [
                 'id' => (string)$i,
-                'type' => 'users',
+                'type' => 'user',
                 'attributes' => [
                     'name' => 'Rick',
                     'email' => 'rick@floor9design.com'
                 ],
                 'links' => [
-                    'self' => 'https://laravel-restful-api.local/users/' . $i
+                    'self' => 'https://laravel-restful-api.local/user/' . $i
                 ],
                 'relationships' => new \stdClass(),
             ];
@@ -129,16 +151,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     public function testJsonDetails404()
     {
         // Set up a mock trait in a class
-        $test_controller = new class {
-            use ApiJsonDefaultTrait;
-
-            public function __construct()
-            {
-                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
-                $this->model = new User();
-                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
-            }
-        };
+        $test_controller = $this->setUpUserClass();
 
         // mock a request
         $request_404 = $this->createMock(Request::class);
@@ -169,16 +182,7 @@ class ApiJsonDefaultTraitTest extends TestCase
     public function testJsonDetailsUser()
     {
         // Set up a mock trait in a class
-        $test_controller = new class {
-            use ApiJsonDefaultTrait;
-
-            public function __construct()
-            {
-                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
-                $this->model = new User();
-                $this->url_base = 'https://laravel-restful-api.local/' . $this->model->getTable();
-            }
-        };
+        $test_controller = $this->setUpUserClass();
 
         // mock a request
         $request_user = $this->createMock(Request::class);
@@ -188,13 +192,13 @@ class ApiJsonDefaultTraitTest extends TestCase
             [
                 'data' => [
                     'id' => "1",
-                    'type' => 'users',
+                    'type' => 'user',
                     'attributes' => [
                         'name' => 'Rick',
                         'email' => 'rick@floor9design.com'
                     ],
                     'links' => [
-                        'self' => 'https://laravel-restful-api.local/users/1'
+                        'self' => 'https://laravel-restful-api.local/user/1'
                     ],
                     'relationships' => new \stdClass(),
                 ],
@@ -210,7 +214,6 @@ class ApiJsonDefaultTraitTest extends TestCase
 
         $user_response = $test_controller->jsonDetails($request_user, 1);
         $this->assertEquals($api_user_response, $user_response->getContent());
-        // Note: this only tests page1, but there's no real need to check if laravel pagination works... it does!
     }
 
     // CREATE
@@ -236,5 +239,27 @@ class ApiJsonDefaultTraitTest extends TestCase
     // jsonCollectionDelete
 
     // jsonElementDelete
+
+    // Other functionality
+
+    /**
+     * Create an anonymous class configured as a User
+     */
+    private function setUpUserClass()
+    {
+        return new class {
+            use ApiJsonDefaultTrait;
+            use ApiJsonTrait;
+
+            public function __construct()
+            {
+                $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
+                $this->setModelNameSingular('user');
+                $this->setModelNamePlural('users');
+                $this->setModel(new $this->controller_model);
+                $this->setUrlBase('https://laravel-restful-api.local/' . $this->getModelNamePlural());
+            }
+        };
+    }
 }
 

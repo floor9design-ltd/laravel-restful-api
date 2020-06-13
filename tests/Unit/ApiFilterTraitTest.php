@@ -68,6 +68,7 @@ class ApiFilterTraitTest extends TestCase
 
         $test = new class extends Model {
             use ApiFilterTrait;
+
             var $api_array_filter = [];
         };
 

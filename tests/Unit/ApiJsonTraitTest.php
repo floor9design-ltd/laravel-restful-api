@@ -56,7 +56,6 @@ class ApiJsonTraitTest extends TestCase
 
         // maximum pagination amount
         $this->assertEquals(200, $test->getMaximumResponseNumber());
-
     }
 
     /**
@@ -80,7 +79,6 @@ class ApiJsonTraitTest extends TestCase
         ];
 
         $this->assertEquals($json_api_response_array, $test->getJsonApiResponseArray());
-
     }
 
 }

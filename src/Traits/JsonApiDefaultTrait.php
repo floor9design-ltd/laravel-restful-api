@@ -727,13 +727,33 @@ trait JsonApiDefaultTrait
      */
     public function jsonApiCollectionDelete(Request $request): JsonResponse
     {
+        unset($this->json_api_response_array['errors']);
+
+        $objects = $this->getControllerModel()::all();
+        $this->json_api_response_array['meta']['count'] = $objects->count();
+
+        // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+        $id_name = $this->model->getKeyName();
+
+        foreach ($objects as $object) {
+            $this->json_api_response_array['data'][] = [
+                'id' => (string)$object->$id_name,
+                'type' => $this->getModelNameSingular(),
+                'attributes' => $object->getJsonFilter($object)
+            ];
+        }
+
         $this->model::query()->delete();
 
-        $this->json_api_response_array['status'] = '200';
-        $this->json_api_response_array['detail'] = 'The collection inside the ' . $this->model->getTable(
-            ) . ' was deleted.';
+        $status = $this->json_api_response_array['meta']['status'] = 200;
+        $this->json_api_response_array['meta']['detail'] = 'The collection inside the ' . $this->getModelNamePlural(
+            ) . ' table was deleted.';
+        $this->json_api_response_array['links'] = [
+            'collection' => $this->getUrlBase()
+        ];
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+
+        return Response::json($this->json_api_response_array, $status);
     }
 
     /**
@@ -748,20 +768,39 @@ trait JsonApiDefaultTrait
         $object = $this->getControllerModel()::find($id ?? 0);
 
         if (!$object) {
-            $this->json_api_response_array['status'] = '404';
-            $this->json_api_response_array['detail'] = 'The ' . $this->model->getTable() . ' could not be found.';
+            $this->json_api_response_array['errors'] = [
+                [
+                    'status' => '404',
+                    'title' => 'Resource could not found',
+                    'detail' => 'The ' . $this->getModelNameSingular() . ' could not be found.'
+                ]
+            ];
+            unset($this->json_api_response_array['meta']);
+            unset($this->json_api_response_array['data']);
+
+            $status = $this->json_api_response_array['errors'][0]['status'];
         } else {
             $object->delete();
+            unset($this->json_api_response_array['errors']);
 
-            $single_object_name = $this->inflector->singularize(
-                $this->model->getTable()
-            );
+            $this->json_api_response_array['meta']['status'] = '200';
+            $this->json_api_response_array['meta']['count'] = 1;
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was deleted.';
+            $this->json_api_response_array['links'] = ['collection' => $this->getUrlBase()];
 
-            $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . $single_object_name . ' was deleted.';
+            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+            $id_name = $this->model->getKeyName();
+
+            $this->json_api_response_array['data'] = [
+                'id' => (string)$object->$id_name,
+                'type' => $this->getModelNameSingular(),
+                'attributes' => $object->getJsonFilter($object)
+            ];
+
+            $status = $this->json_api_response_array['meta']['status'];
         }
 
-        return Response::json($this->json_api_response_array, $this->json_api_response_array['status']);
+        return Response::json($this->json_api_response_array, $status);
     }
 
     // Other functionality

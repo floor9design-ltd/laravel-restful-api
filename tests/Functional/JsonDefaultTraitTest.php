@@ -83,7 +83,7 @@ class JsonDefaultTraitTest extends TestCase
     //jsonApiIndex
 
     /**
-     * Test JsonApiDefaultTrait:JsonIndex.
+     * Test JsonApiDefaultTrait:jsonIndex.
      *
      * @return void
      */
@@ -93,7 +93,7 @@ class JsonDefaultTraitTest extends TestCase
         $test_controller = $this->setUpUserClass();
 
         // mock a request
-        $request_user = $this->createMock(Request::class);
+        $mock_request = $this->createMock(Request::class);
 
         // make an array of 200 users
         $users = [];
@@ -116,7 +116,7 @@ class JsonDefaultTraitTest extends TestCase
         }
 
         // Expected user object response
-        $api_user_response = json_encode(
+        $expected_response = json_encode(
             [
                 'data' => $users,
                 'meta' => [
@@ -135,14 +135,16 @@ class JsonDefaultTraitTest extends TestCase
             ]
         );
 
-        $user_response = $test_controller->jsonApiIndex($request_user);
-        $this->assertEquals($api_user_response, $user_response->getContent());
+        $users_response = $test_controller->jsonApiIndex($mock_request);
+        $this->assertEquals($users_response->getStatusCode(), 200);
+        $this->assertEquals($expected_response, $users_response->getContent());
     }
 
     // jsonApiDetails
 
     /**
-     * Test JsonApiDefaultTrait:JsonDetails.
+     * Test JsonApiDefaultTrait:jsonDetails.
+     * Tests the response where no details are found
      *
      * @return void
      */
@@ -152,10 +154,10 @@ class JsonDefaultTraitTest extends TestCase
         $test_controller = $this->setUpUserClass();
 
         // mock a request
-        $request_404 = $this->createMock(Request::class);
+        $mock_request = $this->createMock(Request::class);
 
         // empty response:
-        $api_404_response = json_encode(
+        $expected_response = json_encode(
             [
                 'errors' => [
                     [
@@ -168,12 +170,13 @@ class JsonDefaultTraitTest extends TestCase
         );
 
         // 404
-        $response_404 = $test_controller->jsonApiDetails($request_404, 0);
-        $this->assertEquals($api_404_response, $response_404->getContent());
+        $response_404 = $test_controller->jsonApiDetails($mock_request, 0);
+        $this->assertEquals($response_404->getStatusCode(), 404);
+        $this->assertEquals($expected_response, $response_404->getContent());
     }
 
     /**
-     * Test JsonApiDefaultTrait:JsonDetails.
+     * Test JsonApiDefaultTrait:jsonDetails.
      *
      * @return void
      */
@@ -183,10 +186,10 @@ class JsonDefaultTraitTest extends TestCase
         $test_controller = $this->setUpUserClass();
 
         // mock a request
-        $request_user = $this->createMock(Request::class);
+        $mock_request = $this->createMock(Request::class);
 
         // Expected user object response
-        $api_user_response = json_encode(
+        $expected_response = json_encode(
             [
                 'data' => [
                     'id' => "1",
@@ -210,8 +213,9 @@ class JsonDefaultTraitTest extends TestCase
             ]
         );
 
-        $user_response = $test_controller->jsonApiDetails($request_user, 1);
-        $this->assertEquals($api_user_response, $user_response->getContent());
+        $user_response = $test_controller->jsonApiDetails($mock_request, 1);
+        $this->assertEquals($user_response->getStatusCode(), 200);
+        $this->assertEquals($expected_response, $user_response->getContent());
     }
 
     // CREATE
@@ -234,9 +238,127 @@ class JsonDefaultTraitTest extends TestCase
 
     // DELETE
 
-    // jsonApiCollectionDelete
+    /**
+     * Test JsonApiDefaultTrait:jsonApiCollectionDelete.
+     *
+     * @return void
+     */
+    public function testJsonApiCollectionDelete()
+    {
+        // Set up a mock trait in a class
+        $test_controller = $this->setUpUserClass();
 
-    // jsonApiElementDelete
+        // mock a request
+        $mock_request = $this->createMock(Request::class);
+
+        // make an array of 200 users
+        $users = [];
+
+        $total = 3;
+
+        $i = 1;
+        while ($i <= $total) {
+            $users[] = [
+                'id' => (string)$i,
+                'type' => 'user',
+                'attributes' => [
+                    'name' => 'Rick',
+                    'email' => 'rick@floor9design.com'
+                ]
+            ];
+            $i++;
+        }
+
+        // Expected user object response
+        $expected_response = json_encode(
+            [
+                'data' => $users,
+                'meta' => [
+                    'status' => 200,
+                    'count' => $total,
+                    'detail' => 'The collection inside the users table was deleted.'
+                ],
+                'links' => [
+                    'collection' => 'https://laravel-restful-api.local/users'
+                ]
+            ]
+        );
+
+        $delete_response = $test_controller->jsonApiCollectionDelete($mock_request, 1);
+        $this->assertEquals($delete_response->getStatusCode(), 200);
+        $this->assertEquals($expected_response, $delete_response->getContent());
+    }
+
+    /**
+     * Test JsonApiDefaultTrait:jsonApiElementDelete.
+     *
+     * @return void
+     */
+    public function testJsonApiElementDelete404()
+    {
+        // Set up a mock trait in a class
+        $test_controller = $this->setUpUserClass();
+
+        // mock a request
+        $mock_request = $this->createMock(Request::class);
+
+        // Expected user object response
+        $expected_response = json_encode(
+            [
+                'errors' => [
+                    [
+                        'status' => '404',
+                        'title' => 'Resource could not found',
+                        'detail' => 'The user could not be found.'
+                    ]
+                ]
+            ]
+        );
+
+        $response_404 = $test_controller->jsonApiElementDelete($mock_request, 0);
+        $this->assertEquals($response_404->getStatusCode(), 404);
+        $this->assertEquals($expected_response, $response_404->getContent());
+    }
+
+    /**
+     * Test JsonApiDefaultTrait:jsonApiElementDelete.
+     *
+     * @return void
+     */
+    public function testJsonApiElementDelete()
+    {
+        // Set up a mock trait in a class
+        $test_controller = $this->setUpUserClass();
+
+        // mock a request
+        $mock_request = $this->createMock(Request::class);
+
+        // Expected user object response
+        $expected_response = json_encode(
+            [
+                'data' => [
+                    'id' => "1",
+                    'type' => 'user',
+                    'attributes' => [
+                        'name' => 'Rick',
+                        'email' => 'rick@floor9design.com'
+                    ]
+                ],
+                'meta' => [
+                    'status' => "200",
+                    'count' => 1,
+                    'detail' => 'The user was deleted.'
+                ],
+                'links' => [
+                    'collection' => 'https://laravel-restful-api.local/users'
+                ]
+            ]
+        );
+
+        $delete_response = $test_controller->jsonApiElementDelete($mock_request, 1);
+        $this->assertEquals($delete_response->getStatusCode(), 200);
+        $this->assertEquals($expected_response, $delete_response->getContent());
+    }
 
     // Other functionality
 

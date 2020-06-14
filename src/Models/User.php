@@ -24,6 +24,7 @@ use Floor9design\LaravelRestfulApi\Traits\JsonApiFilterTrait;
 use Floor9design\LaravelRestfulApi\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 /**
  * Class User
@@ -97,7 +98,7 @@ class User extends Model
     }
 
     /**
-     * Simulate an all() by returning a paginated list.
+     * Simulate a paginate() by returning a paginated list.
      *
      * @return LengthAwarePaginator
      */
@@ -122,6 +123,32 @@ class User extends Model
 
         // turn into a length aware paginator
         return new LengthAwarePaginator($paginated_users, count($users), $maximum_response_number, 1);
+    }
+
+    /**
+     * Simulate an all().
+     *
+     * @return Collection
+     */
+    public static function all($columns = ['*'])
+    {
+        // make an array of 250 users
+        $users = [];
+
+        $i = 1;
+        while ($i <= 3) {
+            // Update the ID to make them unique
+            $user = new User();
+            $user->id = $i;
+
+            $users[] = $user;
+
+            $i++;
+        }
+
+        $collection = collect($users);
+
+        return $collection;
     }
 
     /**
@@ -150,6 +177,31 @@ class User extends Model
         }
 
         return $response;
+    }
+
+    /**
+     * Simulate a delete, responding with either a  fail or pass.
+     *
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        // just going to return true: the mocked delete is successful
+        return true;
+    }
+
+    /**
+     *
+     * @return object anonymous class mocking the delete function
+     */
+    public static function query()
+    {
+        return new class {
+            public function delete()
+            {
+                return true;
+            }
+        };
     }
 
     /**

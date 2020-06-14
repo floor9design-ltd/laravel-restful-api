@@ -76,5 +76,4 @@ trait JsonApiTrait
         return $this->maximum_response_number;
     }
 
-
 }

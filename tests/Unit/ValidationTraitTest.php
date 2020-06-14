@@ -1,8 +1,8 @@
 <?php
 /**
- * JsonTraitTest.php
+ * ValidationTraitTest.php
  *
- * JsonTraitTest class
+ * ValidationTraitTest class
  *
  * php 7.1+
  *
@@ -22,12 +22,13 @@
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
 use Floor9design\LaravelRestfulApi\Traits\JsonApiTrait;
+use Floor9design\LaravelRestfulApi\Traits\ValidationTrait;
 use Orchestra\Testbench\TestCase;
 
 /**
- * JsonTraitTest
+ * ValidationTraitTest
  *
- * This tests the properties/methods implemented by the JsonTrait.
+ * This tests the properties/methods implemented by the ValidationTrait.
  *
  * @category  None
  * @package   Floor9design\LaravelRestfulApi\Tests\Unit
@@ -40,7 +41,7 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class JsonTraitTest extends TestCase
+class ValidationTraitTest extends TestCase
 {
 
     /**
@@ -48,37 +49,14 @@ class JsonTraitTest extends TestCase
      *
      * @return void
      */
-    public function testGetMaximumResponseNumber()
+    public function testGetValidation()
     {
         $test = new class {
-            use JsonApiTrait;
+            use ValidationTrait;
         };
 
         // maximum pagination amount
-        $this->assertEquals(200, $test->getMaximumResponseNumber());
-    }
-
-    /**
-     * Test the JsonApiTrait preset array
-     *
-     * @return void
-     */
-    public function testGetJsonApiResponseArray()
-    {
-        $test = new class {
-            use JsonApiTrait;
-        };
-
-        // Ensure the base response values are set up:
-        $json_api_response_array = [
-            'data' => [],
-            'errors' => [],
-            'meta' => [
-                'status' => null
-            ]
-        ];
-
-        $this->assertEquals($json_api_response_array, $test->getJsonApiResponseArray());
+        $this->assertEquals([], $test->getValidation());
     }
 
 }

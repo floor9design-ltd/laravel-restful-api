@@ -68,7 +68,7 @@ class JsonApiExposesTraitTest extends TestCase
         $test = $this->setUpClass();
 
         // maximum pagination amount
-        $this->assertEquals(['exposed'], $test->getApiArrayFilter());
+        $this->assertEquals(['exposed', 'exposed_json'], $test->getApiArrayFilter());
     }
 
     /**
@@ -81,8 +81,13 @@ class JsonApiExposesTraitTest extends TestCase
     {
         $test = $this->setUpClass();
 
+        $expected_response = [
+            'exposed' => 'test_exposed',
+            'exposed_json' => json_decode(json_encode(['some' => 'content']))
+        ];
+
         // maximum pagination amount
-        $this->assertEquals(['exposed' => 'test_exposed'], $test->getAttributes());
+        $this->assertEquals($expected_response, $test->getAttributes());
     }
 
     // Other functionality
@@ -94,12 +99,14 @@ class JsonApiExposesTraitTest extends TestCase
         return new class {
             use JsonApiExposesTrait;
             var $exposed = 'test_exposed';
+            var $exposed_json;
             var $not_exposed = 'test_not_exposed';
             protected $api_array_filter = [];
 
             public function __construct()
             {
-                $this->api_array_filter = ['exposed'];
+                $this->api_array_filter = ['exposed', 'exposed_json'];
+                $this->exposed_json = json_encode(['some' => 'content']);
             }
         };
     }

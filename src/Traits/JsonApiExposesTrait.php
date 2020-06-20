@@ -20,6 +20,8 @@
 
 namespace Floor9design\LaravelRestfulApi\Traits;
 
+use Illuminate\Support\Str;
+
 /**
  * Trait JsonApiExposesTrait
  *
@@ -72,7 +74,14 @@ trait JsonApiExposesTrait
         $attributes = [];
 
         foreach ($this->getApiArrayFilter() as $api_array_key) {
-            $attributes[$api_array_key] = $this->$api_array_key;
+
+            // if the object has "json" in it, automatically decode (to fix layout issues when it's re-encoded)
+            if (Str::contains($api_array_key, 'json')) {
+                $attributes[$api_array_key] = json_decode($this->$api_array_key);
+            } else {
+                $attributes[$api_array_key] = $this->$api_array_key;
+            }
+
         }
 
         return $attributes;

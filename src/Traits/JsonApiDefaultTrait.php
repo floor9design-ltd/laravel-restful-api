@@ -199,7 +199,7 @@ trait JsonApiDefaultTrait
      */
     public function jsonApiIndex(Request $request): JsonResponse
     {
-        $objects = $this->getControllerModel()::paginate($this->maximum_response_number);
+        $objects = $this->getControllerModel()::paginate($this->getJsonApiMaximumResponseNumber());
 
         // This always returns 200 if it's got this far... an empty response set is still "OK".
         $this->json_api_response_array['meta']['status'] = "200";

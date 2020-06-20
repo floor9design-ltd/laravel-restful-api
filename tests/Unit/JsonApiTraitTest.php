@@ -1,8 +1,8 @@
 <?php
 /**
- * JsonTraitTest.php
+ * JsonApiTraitTest.php
  *
- * JsonTraitTest class
+ * JsonApiTraitTest class
  *
  * php 7.1+
  *
@@ -25,9 +25,9 @@ use Floor9design\LaravelRestfulApi\Traits\JsonApiTrait;
 use Orchestra\Testbench\TestCase;
 
 /**
- * JsonTraitTest
+ * JsonApiTraitTest
  *
- * This tests the properties/methods implemented by the JsonTrait.
+ * This tests the properties/methods implemented by the JsonApiTrait.
  *
  * @category  None
  * @package   Floor9design\LaravelRestfulApi\Tests\Unit
@@ -40,7 +40,7 @@ use Orchestra\Testbench\TestCase;
  * @version   1.0
  * @since     File available since Release 1.0
  */
-class JsonTraitTest extends TestCase
+class JsonApiTraitTest extends TestCase
 {
 
     /**
@@ -48,14 +48,14 @@ class JsonTraitTest extends TestCase
      *
      * @return void
      */
-    public function testGetMaximumResponseNumber()
+    public function testGetJsonApiMaximumResponseNumber()
     {
         $test = new class {
             use JsonApiTrait;
         };
 
         // maximum pagination amount
-        $this->assertEquals(200, $test->getMaximumResponseNumber());
+        $this->assertEquals(200, $test->getJsonApiMaximumResponseNumber());
     }
 
     /**

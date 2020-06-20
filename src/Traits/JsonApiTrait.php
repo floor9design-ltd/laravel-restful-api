@@ -54,7 +54,7 @@ trait JsonApiTrait
     /**
      * @var int Maximum number of responses that the api will give if pagination is set up
      */
-    protected $maximum_response_number = 200;
+    protected $json_api_maximum_response_number = 200;
 
     /**
      * @return array
@@ -68,12 +68,12 @@ trait JsonApiTrait
 
     /**
      * @return int
-     * @see $maximum_response_number
+     * @see $json_api_maximum_response_number
      *
      */
-    public function getMaximumResponseNumber(): int
+    public function getJsonApiMaximumResponseNumber(): int
     {
-        return $this->maximum_response_number;
+        return $this->json_api_maximum_response_number;
     }
 
 }

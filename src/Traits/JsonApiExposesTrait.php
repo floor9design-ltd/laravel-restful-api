@@ -69,7 +69,7 @@ trait JsonApiExposesTrait
      *
      * @return array
      */
-    public function getAttributes(): array
+    public function getApiAttributes(): array
     {
         $attributes = [];
 

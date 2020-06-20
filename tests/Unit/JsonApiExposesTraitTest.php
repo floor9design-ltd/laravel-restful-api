@@ -77,7 +77,7 @@ class JsonApiExposesTraitTest extends TestCase
      *
      * @return void
      */
-    public function testGetAttributes()
+    public function testGetApiAttributes()
     {
         $test = $this->setUpClass();
 
@@ -87,7 +87,7 @@ class JsonApiExposesTraitTest extends TestCase
         ];
 
         // maximum pagination amount
-        $this->assertEquals($expected_response, $test->getAttributes());
+        $this->assertEquals($expected_response, $test->getApiAttributes());
     }
 
     // Other functionality

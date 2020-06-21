@@ -47,12 +47,12 @@ trait JsonApiExposesTrait
 
     /**
      * @return array
-     * @see $api_array_filter
+     * @see $api_filter
      *
      */
-    public function getApiArrayFilter(): array
+    public function getApiFilter(): array
     {
-        return $this->api_array_filter ?? [];
+        return $this->api_filter ?? [];
     }
 
     /**
@@ -86,7 +86,7 @@ trait JsonApiExposesTrait
     {
         $attributes = [];
 
-        foreach ($this->getApiArrayFilter() as $api_array_key) {
+        foreach ($this->getApiFilter() as $api_array_key) {
 
             // if the object has "json" in it, automatically decode (to fix layout issues when it's re-encoded)
             if (Str::contains($api_array_key, 'json')) {

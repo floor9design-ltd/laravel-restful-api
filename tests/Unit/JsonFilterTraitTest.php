@@ -69,12 +69,12 @@ class JsonFilterTraitTest extends TestCase
         $test = new class extends Model {
             use JsonApiFilterTrait;
 
-            var $api_array_filter = [];
+            var $api_filter = [];
         };
 
         foreach ($data as $property => $value) {
             $test->$property = $value;
-            $test->api_array_filter[] = $property;
+            $test->api_filter[] = $property;
         }
 
         // Now extract it using the function:

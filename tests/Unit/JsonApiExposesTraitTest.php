@@ -22,7 +22,6 @@
 namespace Floor9design\LaravelRestfulApi\Tests\Unit;
 
 use Floor9design\LaravelRestfulApi\Traits\JsonApiExposesTrait;
-use Floor9design\LaravelRestfulApi\Traits\JsonApiTrait;
 use Orchestra\Testbench\TestCase;
 
 /**
@@ -45,30 +44,30 @@ class JsonApiExposesTraitTest extends TestCase
 {
 
     /**
-     * Check the getApiArrayFilter using the default $api_array_filter default value.
+     * Check the getApiFilter using the default $api_filter default value.
      *
      * @return void
      */
-    public function testGetApiArrayFilterDefault()
+    public function testGetApiFilterDefault()
     {
         $test = new class {
             use JsonApiExposesTrait;
         };
 
-        $this->assertEquals([], $test->getApiArrayFilter());
+        $this->assertEquals([], $test->getApiFilter());
     }
 
     /**
-     * Check the getApiArrayFilter using the custom default $api_array_filter default value.
+     * Check the getApiFilter using the custom default $api_filter default value.
      *
      * @return void
      */
-    public function testGetApiArrayFilterCustom()
+    public function testGetApiFilterCustom()
     {
         $test = $this->setUpClass();
 
         // maximum pagination amount
-        $this->assertEquals(['exposed', 'exposed_json'], $test->getApiArrayFilter());
+        $this->assertEquals(['exposed', 'exposed_json'], $test->getApiFilter());
     }
 
     /**
@@ -95,17 +94,19 @@ class JsonApiExposesTraitTest extends TestCase
     /**
      * @return object Anonymous testing class
      */
-    private function setUpClass() {
+    private function setUpClass()
+    {
         return new class {
             use JsonApiExposesTrait;
+
             var $exposed = 'test_exposed';
             var $exposed_json;
             var $not_exposed = 'test_not_exposed';
-            protected $api_array_filter = [];
+            protected $api_filter = [];
 
             public function __construct()
             {
-                $this->api_array_filter = ['exposed', 'exposed_json'];
+                $this->api_filter = ['exposed', 'exposed_json'];
                 $this->exposed_json = json_encode(['some' => 'content']);
             }
         };

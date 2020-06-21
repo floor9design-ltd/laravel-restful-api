@@ -76,7 +76,7 @@ class User extends Model
      *
      * @var array
      */
-    protected $api_array_filter = [
+    protected $api_filter = [
         'name',
         'email'
     ];

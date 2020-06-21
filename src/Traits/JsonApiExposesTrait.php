@@ -20,6 +20,8 @@
 
 namespace Floor9design\LaravelRestfulApi\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -41,15 +43,6 @@ use Illuminate\Support\Str;
  */
 trait JsonApiExposesTrait
 {
-    // Properties
-
-    /**
-     * The attributes that are exposed to the API.
-     *
-     * @var array
-     */
-    protected $api_array_filter = [];
-
     // Accessors
 
     /**
@@ -59,7 +52,27 @@ trait JsonApiExposesTrait
      */
     public function getApiArrayFilter(): array
     {
-        return $this->api_array_filter;
+        return $this->api_array_filter ?? [];
+    }
+
+    /**
+     * @return array
+     * @see $api_exposed_relationships
+     *
+     */
+    public function getApiExposedRelationships(): array
+    {
+        return $this->api_exposed_relationships ?? [];
+    }
+
+    /**
+     * @return array
+     * @see $api_included_relationships
+     *
+     */
+    public function getApiIncludedRelationships(): array
+    {
+        return $this->api_included_relationships ?? [];
     }
 
     // Other functionality
@@ -85,6 +98,111 @@ trait JsonApiExposesTrait
         }
 
         return $attributes;
+    }
+
+    /**
+     * Loads all the api_exposed_relationships attributes into an array suitable for inclusion
+     *
+     * @return array
+     */
+    public function processApiExposedRelationships(): array
+    {
+        $relationships = [];
+
+        foreach ($this->getApiExposedRelationships() as $relationship) {
+
+            if($this->$relationship ?? false) {
+
+                if($this->$relationship instanceof Collection) {
+                    // catch collections
+                    foreach ($this->$relationship as $object) {
+                        $relationships[$relationship][] = $this->generateRelationshipStructure($object);
+                    }
+                } else {
+                    // process single objects
+                    $relationships[$relationship] = $this->generateRelationshipStructure($this->$relationship);
+                }
+
+            }
+
+        }
+
+        if(count($this->generateIncludedStructure($this))) {
+            $relationships['included'] = $this->generateIncludedStructure($this);
+        }
+
+        return $relationships;
+    }
+
+    /**
+     * Creates a relationship array suitable for inclusion from a model
+     *
+     * @param Model $model
+     * @return array
+     * @todo update to include links
+     * @todo update to not use getTable()
+     *
+     */
+    public function generateRelationshipStructure(Model $model) : array
+    {
+        //$links = [];
+        $data = [];
+
+        foreach ($model->getApiArrayFilter() as $api_array_key) {
+
+            $data['type'] = $model->getTable();
+            $data['id'] = (string)$model->id;
+
+        }
+
+        return [
+            //'links' => $links,
+            'data' => $data
+        ];
+    }
+
+    /**
+     * Creates an included array suitable for inclusion from a model
+     *
+     * @param Model $model
+     * @return array
+     */
+    public function generateIncludedStructure(Model $model) : array
+    {
+        $included = [];
+
+        // includes all are at the same level, so flatten all ojbects:
+        $array_to_process = [];
+
+        foreach ($model->getApiIncludedRelationships() as $relationship) {
+
+            if($model->$relationship ?? false) {
+                if($model->$relationship instanceof Collection) {
+                    // catch collections
+                    foreach ($model->$relationship as $object) {
+                        $array_to_process[] = $object;
+                    }
+                } else {
+                    // process single objects
+                    $array_to_process[] = $model->$relationship;
+                }
+            }
+
+        }
+
+        foreach ($array_to_process as $relationship_object) {
+
+            $processed_object = [];
+
+            $processed_object['type'] = $relationship_object->getTable();
+            $processed_object['id'] = (string)$relationship_object->id;
+
+            $processed_object['attributes'] = $relationship_object->getApiAttributes();
+
+            $included[] = $processed_object;
+        }
+
+        return $included;
     }
 
 }

@@ -85,10 +85,10 @@ trait JsonApiExposesTrait
     public function getApiModelNameSingular(): string
     {
         if($this->api_model_name_singular ?? false) {
-            return $this->api_model_name_singular;
         } else {
-            return Str::singular($this->getTable());
+            $this->api_model_name_singular = Str::singular($this->getTable());
         }
+        return $this->api_model_name_singular;
     }
 
     /**
@@ -99,11 +99,11 @@ trait JsonApiExposesTrait
      */
     public function getApiModelNamePlural(): string
     {
-        if($this->api_model_name_singular ?? false) {
-            return $this->api_model_name_singular;
+        if($this->api_model_name_plural ?? false) {
         } else {
-            $this->getTable();
+            $this->api_model_name_plural = $this->getTable();
         }
+        return $this->api_model_name_plural;
     }
 
     // Other functionality

@@ -65,14 +65,6 @@ class JsonDefaultTraitTest extends TestCase
         $test_controller->setControllerModel($controller_model);
         $this->assertSame($controller_model, $test_controller->getControllerModel());
 
-        $model_name_singular = 'user';
-        $test_controller->setModelNameSingular($model_name_singular);
-        $this->assertSame($model_name_singular, $test_controller->getModelNameSingular());
-
-        $model_name_plural = 'users';
-        $test_controller->setModelNamePlural($model_name_plural);
-        $this->assertSame($model_name_plural, $test_controller->getModelNamePlural());
-
         $url_base = 'users';
         $test_controller->setUrlBase($url_base);
         $this->assertSame($url_base, $test_controller->getUrlBase());
@@ -374,10 +366,8 @@ class JsonDefaultTraitTest extends TestCase
             public function __construct()
             {
                 $this->controller_model = '\Floor9design\LaravelRestfulApi\Models\User';
-                $this->setModelNameSingular('user');
-                $this->setModelNamePlural('users');
                 $this->setModel(new $this->controller_model);
-                $this->setUrlBase('https://laravel-restful-api.local/' . $this->getModelNamePlural());
+                $this->setUrlBase('https://laravel-restful-api.local/' . $this->getModel()->getApiModelNamePlural());
             }
         };
     }

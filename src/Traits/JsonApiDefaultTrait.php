@@ -122,50 +122,6 @@ trait JsonApiDefaultTrait
 
     /**
      * @return string
-     * @see $model_name_singular
-     *
-     */
-    public function getModelNameSingular(): string
-    {
-        return $this->model_name_singular;
-    }
-
-    /**
-     * @param string $model_name_singular
-     * @return JsonApiDefaultTrait
-     * @see $model_name_singular
-     *
-     */
-    public function setModelNameSingular(string $model_name_singular): object
-    {
-        $this->model_name_singular = $model_name_singular;
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @see $model_name_plural
-     *
-     */
-    public function getModelNamePlural(): string
-    {
-        return $this->model_name_plural;
-    }
-
-    /**
-     * @param string $model_name_plural
-     * @return JsonApiDefaultTrait
-     * @see $model_name_plural
-     *
-     */
-    public function setModelNamePlural(string $model_name_plural): object
-    {
-        $this->model_name_plural = $model_name_plural;
-        return $this;
-    }
-
-    /**
-     * @return string
      * @see $url_base
      *
      */
@@ -226,7 +182,7 @@ trait JsonApiDefaultTrait
         foreach ($objects as $object) {
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $object->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name],
                 'relationships' => new \stdClass()
@@ -254,7 +210,7 @@ trait JsonApiDefaultTrait
                 [
                     'status' => '404',
                     'title' => 'Resource could not found',
-                    'detail' => 'The ' . $this->getModelNameSingular() . ' could not be found.'
+                    'detail' => 'The ' . $this->model->getApiModelNameSingular() . ' could not be found.'
                 ]
             ];
             unset($this->json_api_response_array['meta']);
@@ -274,7 +230,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
@@ -331,7 +287,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
@@ -339,7 +295,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was created.';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->model->getApiModelNameSingular() . ' was created.';
             $this->json_api_response_array['meta']['count'] = 1;
         }
 
@@ -401,7 +357,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
@@ -409,7 +365,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'] = "201";
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was created.';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->model->getApiModelNameSingular() . ' was created.';
             $this->json_api_response_array['meta']['count'] = 1;
         }
 
@@ -558,7 +514,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
@@ -707,8 +663,8 @@ trait JsonApiDefaultTrait
             $object->fill($re_encoded_array);
             $object->save();
             $this->json_api_response_array['status'] = '200';
-            $this->json_api_response_array['detail'] = 'The ' . $this->getModelNameSingular() . ' was replaced.';
-            $this->json_api_response_array[$this->getModelNameSingular()] = $object->getJsonFilter(
+            $this->json_api_response_array['detail'] = 'The ' . $this->model->getApiModelNameSingular() . ' was replaced.';
+            $this->json_api_response_array[$this->model->getApiModelNameSingular()] = $object->getJsonFilter(
                 $object
             );
         }
@@ -738,7 +694,7 @@ trait JsonApiDefaultTrait
         foreach ($objects as $object) {
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes()
             ];
         }
@@ -746,8 +702,7 @@ trait JsonApiDefaultTrait
         $this->model::query()->delete();
 
         $status = $this->json_api_response_array['meta']['status'] = 200;
-        $this->json_api_response_array['meta']['detail'] = 'The collection inside the ' . $this->getModelNamePlural(
-            ) . ' table was deleted.';
+        $this->json_api_response_array['meta']['detail'] = 'The collection inside the ' . $this->model->getApiModelNamePlural() . ' table was deleted.';
         $this->json_api_response_array['links'] = [
             'collection' => $this->getUrlBase()
         ];
@@ -768,11 +723,12 @@ trait JsonApiDefaultTrait
         $object = $this->getControllerModel()::find($id ?? 0);
 
         if (!$object) {
+
             $this->json_api_response_array['errors'] = [
                 [
                     'status' => '404',
                     'title' => 'Resource could not found',
-                    'detail' => 'The ' . $this->getModelNameSingular() . ' could not be found.'
+                    'detail' => 'The ' . $this->model->getApiModelNameSingular() . ' could not be found.'
                 ]
             ];
             unset($this->json_api_response_array['meta']);
@@ -785,7 +741,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['meta']['status'] = '200';
             $this->json_api_response_array['meta']['count'] = 1;
-            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->getModelNameSingular() . ' was deleted.';
+            $this->json_api_response_array['meta']['detail'] = 'The ' . $this->model->getApiModelNameSingular() . ' was deleted.';
             $this->json_api_response_array['links'] = ['collection' => $this->getUrlBase()];
 
             // remember: even if the ID is not called "id", JSON API format requires that it be called that:
@@ -793,7 +749,7 @@ trait JsonApiDefaultTrait
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
-                'type' => $this->getModelNameSingular(),
+                'type' => $this->model->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes()
             ];
 
@@ -863,6 +819,7 @@ trait JsonApiDefaultTrait
     /**
      * Singularizes the url, defaulting to $this->getUrlBase() if not supplied
      *
+     * @param object $object
      * @param string|null $url
      * @return string
      */
@@ -872,6 +829,6 @@ trait JsonApiDefaultTrait
             $url = $this->getUrlBase();
         }
 
-        return str_replace($this->getModelNamePlural(), $this->getModelNameSingular(), $url);
+        return str_replace($this->model->getApiModelNamePlural(), $this->model->getApiModelNameSingular(), $url);
     }
 }

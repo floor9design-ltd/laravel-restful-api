@@ -75,6 +75,37 @@ trait JsonApiExposesTrait
         return $this->api_included_relationships ?? [];
     }
 
+    /**
+     * This attempts to get a model property ($api_model_name_singular).
+     * If it cannot be found, the tablename will be returned, using the Str:singular() function to
+     * singularise it.
+     *
+     * @return string
+     */
+    public function getApiModelNameSingular(): string
+    {
+        if($this->api_model_name_singular ?? false) {
+            return $this->api_model_name_singular;
+        } else {
+            return Str::singular($this->getTable());
+        }
+    }
+
+    /**
+     * This attempts to get a model property ($api_model_name_plural).
+     * If it cannot be found, the tablename will be returned.
+     *
+     * @return string
+     */
+    public function getApiModelNamePlural(): string
+    {
+        if($this->api_model_name_singular ?? false) {
+            return $this->api_model_name_singular;
+        } else {
+            $this->getTable();
+        }
+    }
+
     // Other functionality
 
     /**

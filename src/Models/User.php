@@ -81,6 +81,10 @@ class User extends Model
         'email'
     ];
 
+    protected $api_model_name_singular = 'user';
+
+    protected $api_model_name_plural = 'users';
+
     /**
      * Simulate the find by returning a user.
      *

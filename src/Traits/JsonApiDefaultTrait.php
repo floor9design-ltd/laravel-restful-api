@@ -227,7 +227,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object),
+                'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name],
                 'relationships' => new \stdClass()
             ];
@@ -275,7 +275,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object),
+                'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -332,7 +332,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object),
+                'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -402,7 +402,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object),
+                'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -559,7 +559,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object),
+                'attributes' => $object->getApiAttributes(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
 
@@ -739,7 +739,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'][] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object)
+                'attributes' => $object->getApiAttributes()
             ];
         }
 
@@ -794,7 +794,7 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModelNameSingular(),
-                'attributes' => $object->getJsonFilter($object)
+                'attributes' => $object->getApiAttributes()
             ];
 
             $status = $this->json_api_response_array['meta']['status'];

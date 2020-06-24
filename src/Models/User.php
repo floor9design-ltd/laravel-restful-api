@@ -20,7 +20,7 @@
 
 namespace Floor9design\LaravelRestfulApi\Models;
 
-use Floor9design\LaravelRestfulApi\Traits\JsonApiFilterTrait;
+use Floor9design\LaravelRestfulApi\Traits\JsonApiExposesTrait;
 use Floor9design\LaravelRestfulApi\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -48,7 +48,7 @@ use Illuminate\Support\Collection;
  */
 class User extends Model
 {
-    use JsonApiFilterTrait, ValidationTrait;
+    use JsonApiExposesTrait, ValidationTrait;
 
     /**
      * Example test data

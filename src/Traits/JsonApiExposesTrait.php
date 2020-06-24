@@ -187,14 +187,13 @@ trait JsonApiExposesTrait
      * @param Model $model
      * @return array
      * @todo update to include links
-     * @todo update to not use getTable()
      *
      */
     public function generateRelationshipStructure(Model $model) : array
     {
         //$links = [];
         $data = [];
-        $data['type'] = $model->getTable();
+        $data['type'] = $model->getApiModelNameSingular();
         $data['id'] = (string)$model->id;
 
         return [
@@ -245,7 +244,7 @@ trait JsonApiExposesTrait
 
             $processed_object = [];
 
-            $processed_object['type'] = $relationship_object->getTable();
+            $processed_object['type'] = $relationship_object->getApiModelNameSingular();
             $processed_object['id'] = (string)$relationship_object->id;
 
             $processed_object['attributes'] = $relationship_object->getApiAttributes();

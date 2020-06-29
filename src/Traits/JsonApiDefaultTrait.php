@@ -234,10 +234,9 @@ trait JsonApiDefaultTrait
                 'id' => (string)$object->$id_name,
                 'type' => $this->getModel()->getApiModelNameSingular(),
                 'attributes' => $object->getApiAttributes(),
+                'relationships' => $object->processApiExposedRelationships(),
                 'links' => ['self' => $this->singularizeUrl() . '/' . $object->$id_name]
             ];
-
-            $this->json_api_response_array['data']['relationships'] = new \stdClass();
 
             $status = $this->json_api_response_array['meta']['status'];
         }

@@ -153,22 +153,22 @@ trait JsonApiExposesTrait
     {
         $relationships = [];
 
-        foreach ($this->getApiExposedRelationships() as $relationship) {
+        foreach ($this->getApiExposedRelationships() as $relationship_name => $relationship_method) {
             if(
                 // Show if there was no overwrite:
                 !$overwrite ||
                 // or the overwrite matches the key
-                in_array($relationship, $overwrite)
+                in_array($relationship_method, $overwrite)
             ) {
-                if ($this->$relationship ?? false) {
-                    if ($this->$relationship instanceof Collection) {
+                if ($this->$relationship_method ?? false) {
+                    if ($this->$relationship_method instanceof Collection) {
                         // catch collections
-                        foreach ($this->$relationship as $object) {
-                            $relationships[$relationship][] = $this->generateRelationshipStructure($object);
+                        foreach ($this->$relationship_method as $object) {
+                            $relationships[$relationship_name][] = $this->generateRelationshipStructure($object);
                         }
                     } else {
                         // process single objects
-                        $relationships[$relationship] = $this->generateRelationshipStructure($this->$relationship);
+                        $relationships[$relationship_name] = $this->generateRelationshipStructure($this->$relationship_method);
                     }
                 }
             }

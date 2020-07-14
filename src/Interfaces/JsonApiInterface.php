@@ -2,7 +2,7 @@
 /**
  * JsonApiInterface.php
  *
- * JsonApiInterface trait
+ * JsonApiInterface
  *
  * php 7.0+
  *

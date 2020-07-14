@@ -259,6 +259,13 @@ trait JsonApiDefaultTrait
         $re_encoded_array = $this->extractJsonApiAttributes($request->all());
 
         $object = new $this->controller_model();
+
+        // remember: even if the ID is not called "id", JSON API format requires that it be called that:
+        $id_name = $this->model->getKeyName();
+
+        // manually unset the id: this needs to be a new model so force a create
+        unset($re_encoded_array[$id_name]);
+
         $validator = Validator::make(
             $re_encoded_array,
             $object->getValidation()
@@ -282,9 +289,6 @@ trait JsonApiDefaultTrait
 
             $object->fill($re_encoded_array);
             $object->save();
-
-            // remember: even if the ID is not called "id", JSON API format requires that it be called that:
-            $id_name = $this->model->getKeyName();
 
             $this->json_api_response_array['data'] = [
                 'id' => (string)$object->$id_name,

@@ -190,10 +190,10 @@ class JsonDefaultTraitTest extends TestCase
                         'name' => 'Rick',
                         'email' => 'rick@floor9design.com'
                     ],
+                    'relationships' => new \stdClass(),
                     'links' => [
                         'self' => 'https://laravel-restful-api.local/user/1'
                     ],
-                    'relationships' => new \stdClass(),
                 ],
                 'meta' => [
                     'status' => "200",

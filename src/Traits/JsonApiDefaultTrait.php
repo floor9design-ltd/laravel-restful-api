@@ -287,7 +287,7 @@ trait JsonApiDefaultTrait
                 ];
             }
 
-            unset($this->json_api_response_array['meta']);
+            $this->json_api_response_array['meta']['status'] = '422';
             unset($this->json_api_response_array['data']);
 
             $status = $this->json_api_response_array['errors'][0]['status'];
@@ -355,7 +355,7 @@ trait JsonApiDefaultTrait
                 ];
             }
 
-            unset($this->json_api_response_array['meta']);
+            $this->json_api_response_array['meta']['status'] = '422';
             unset($this->json_api_response_array['data']);
 
             $status = $this->json_api_response_array['errors'][0]['status'];
@@ -423,7 +423,7 @@ trait JsonApiDefaultTrait
                     ];
                 }
 
-                unset($this->json_api_response_array['meta']);
+                $this->json_api_response_array['meta']['status'] = '422';
                 unset($this->json_api_response_array['data']);
 
                 $status = $this->json_api_response_array['errors'][0]['status'];
@@ -598,7 +598,7 @@ trait JsonApiDefaultTrait
                     ];
                 }
 
-                unset($this->json_api_response_array['meta']);
+                $this->json_api_response_array['meta']['status'] = '422';
                 unset($this->json_api_response_array['data']);
 
                 $status = $this->json_api_response_array['errors'][0]['status'];
@@ -673,6 +673,10 @@ trait JsonApiDefaultTrait
             $this->json_api_response_array['status'] = '422';
             $this->json_api_response_array['detail'] = 'Input validation has failed.';
             $this->json_api_response_array['validator_errors'] = $validator->errors();
+
+            $this->json_api_response_array['meta']['status'] = '422';
+            unset($this->json_api_response_array['data']);
+
         } else {
             $object->fill($re_encoded_array);
             $object->save();

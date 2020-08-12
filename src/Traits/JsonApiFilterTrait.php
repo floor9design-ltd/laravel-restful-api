@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
 /**
  * Trait JsonApiFilterTrait
  *
- * Trait to allow the base API o filter on object's structure, correctly parsing it into an array.
+ * Trait to allow the base API to filter on object's structure, correctly parsing it into an array.
  * This catches elements, such as JSON, and correctly parses them for the returning.
  *
  * @category  None

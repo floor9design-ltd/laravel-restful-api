@@ -809,7 +809,7 @@ trait JsonApiDefaultTrait
                 }
             }
         } elseif (
-            is_array($array['data']) &&
+            is_array($array['data'] ?? false) &&
             array_values($array['data'])[0]['attributes'] ?? false
         ) {
             // array object - parse over each item

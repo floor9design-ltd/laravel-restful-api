@@ -12,7 +12,7 @@
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://github.com/floor9design-ltd/laravel-restful-api
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
  *
@@ -41,7 +41,7 @@ use Illuminate\Support\Collection;
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://github.com/floor9design-ltd/laravel-restful-api
  * @link      https://floor9design.com
  * @see       \Floor9design\LaravelRestfulApi\Tests\Functional\ApiJsonDefaultTraitTest
  * @since     File available since Release 1.0

@@ -1,6 +1,6 @@
 # laravel-restful-api
 
-[![Latest Version](https://img.shields.io/github/release/elb98rm/laravel-restful-api.svg?style=plastic)](https://github.com/elb98rm/laravel-restful-api/releases)
+[![Latest Version](https://img.shields.io/github/release/elb98rm/laravel-restful-api.svg?style=plastic)](https://github.com/floor9design-ltd/laravel-restful-api/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/laravel-restful-api/master.svg?style=plastic)](https://travis-ci.org/elb98rm/laravel-restful-api)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api/code-structure)

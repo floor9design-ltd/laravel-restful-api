@@ -12,7 +12,7 @@
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://github.com/floor9design-ltd/laravel-restful-api
  * @link      https://floor9design.com
  * @version   1.0
  * @since     File available since Release 1.0
@@ -35,7 +35,7 @@ use Orchestra\Testbench\TestCase;
  * @copyright Floor9design Ltd
  * @license   MIT
  * @version   1.0
- * @link      https://github.com/elb98rm/laravel-restful-api
+ * @link      https://github.com/floor9design-ltd/laravel-restful-api
  * @link      https://floor9design.com
  * @version   1.0
  * @since     File available since Release 1.0

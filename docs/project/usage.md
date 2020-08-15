@@ -1,5 +1,9 @@
 # Usage
 
+## A restful example
+
+... how to set up auto routes
+
 ## Routes
 
 To be completed
@@ -206,4 +210,8 @@ use JsonApiTrait;
 ```
 
 Here, two clashing traits use the `insteadof` keyword to choose the correct method to apply.
+
+## custom restful calls
+
+* overwriting
 

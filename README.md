@@ -1,11 +1,14 @@
 # laravel-restful-api
 
-[![Latest Version](https://img.shields.io/github/release/elb98rm/laravel-restful-api.svg?style=plastic)](https://github.com/floor9design-ltd/laravel-restful-api/releases)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/laravel-restful-api/master.svg?style=plastic)](https://travis-ci.org/elb98rm/laravel-restful-api)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/laravel-restful-api.svg?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
+[![Latest Version](https://img.shields.io/github/v/release/floor9design-ltd/laravel-restful-api?include_prereleases&style=plastic)](https://github.com/floor9design-ltd/laravel-restful-api/releases)
+[![Packagist](https://img.shields.io/packagist/v/floor9design/laravel-restful-api?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENCE.md)
+
+[![Build Status](https://img.shields.io/travis/floor9design-ltd/laravel-restful-api?style=plastic)](https://travis-ci.org/github/floor9design-ltd/laravel-restful-api)
+[![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/laravel-restful-api?style=plastic)](https://codecov.io/gh/floor9design-ltd/laravel-restful-api)
+
+[![Github Downloads](https://img.shields.io/github/downloads/floor9design-ltd/laravel-restful-api/total?style=plastic)](https://github.com/floor9design-ltd/laravel-restful-api)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/floor9design/laravel-restful-api?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
 
 A set of restful API classes that offer strict RESTful methods for laravel. Currently in development.
 

@@ -103,16 +103,16 @@
         },
         {
             "name": "floor9design/json-api-formatter",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/floor9design-ltd/json-api-formatter.git",
-                "reference": "4781548ea14740eb6cf4b135249bc6be52f1a913"
+                "reference": "571c4d173c4cbb5eefb048762c9738c9be8a63d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/floor9design-ltd/json-api-formatter/zipball/4781548ea14740eb6cf4b135249bc6be52f1a913",
-                "reference": "4781548ea14740eb6cf4b135249bc6be52f1a913",
+                "url": "https://api.github.com/repos/floor9design-ltd/json-api-formatter/zipball/571c4d173c4cbb5eefb048762c9738c9be8a63d2",
+                "reference": "571c4d173c4cbb5eefb048762c9738c9be8a63d2",
                 "shasum": ""
             },
             "require": {
@@ -149,11 +149,7 @@
                 "floor9design",
                 "rest"
             ],
-            "support": {
-                "issues": "https://github.com/floor9design-ltd/json-api-formatter/issues",
-                "source": "https://github.com/floor9design-ltd/json-api-formatter/tree/master"
-            },
-            "time": "2020-08-17T10:38:04+00:00"
+            "time": "2020-10-06T13:08:15+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -817,16 +813,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v7.28.3",
+            "version": "v7.28.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b0942c391975972b1a54b2dc983e33a239f169a9"
+                "reference": "de187e9200948bab6975167e480950abcd5efdac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b0942c391975972b1a54b2dc983e33a239f169a9",
-                "reference": "b0942c391975972b1a54b2dc983e33a239f169a9",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/de187e9200948bab6975167e480950abcd5efdac",
+                "reference": "de187e9200948bab6975167e480950abcd5efdac",
                 "shasum": ""
             },
             "require": {
@@ -971,11 +967,7 @@
                 "framework",
                 "laravel"
             ],
-            "support": {
-                "issues": "https://github.com/laravel/framework/issues",
-                "source": "https://github.com/laravel/framework"
-            },
-            "time": "2020-09-17T14:23:26+00:00"
+            "time": "2020-10-06T14:22:09+00:00"
         },
         {
             "name": "league/commonmark",

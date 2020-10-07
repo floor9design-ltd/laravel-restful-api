@@ -103,16 +103,16 @@
         },
         {
             "name": "floor9design/json-api-formatter",
-            "version": "0.1.1",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/floor9design-ltd/json-api-formatter.git",
-                "reference": "571c4d173c4cbb5eefb048762c9738c9be8a63d2"
+                "reference": "fdec514f52a8717cb1064a18f3f5bfa78ca69746"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/floor9design-ltd/json-api-formatter/zipball/571c4d173c4cbb5eefb048762c9738c9be8a63d2",
-                "reference": "571c4d173c4cbb5eefb048762c9738c9be8a63d2",
+                "url": "https://api.github.com/repos/floor9design-ltd/json-api-formatter/zipball/fdec514f52a8717cb1064a18f3f5bfa78ca69746",
+                "reference": "fdec514f52a8717cb1064a18f3f5bfa78ca69746",
                 "shasum": ""
             },
             "require": {
@@ -149,7 +149,7 @@
                 "floor9design",
                 "rest"
             ],
-            "time": "2020-10-06T13:08:15+00:00"
+            "time": "2020-10-07T00:11:19+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

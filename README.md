@@ -4,7 +4,7 @@
 [![Packagist](https://img.shields.io/packagist/v/floor9design/laravel-restful-api?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENCE.md)
 
-[![Build Status](https://img.shields.io/travis/floor9design-ltd/laravel-restful-api?style=plastic)](https://travis-ci.org/github/floor9design-ltd/laravel-restful-api)
+[![Build Status](https://img.shields.io/travis/floor9design-ltd/laravel-restful-api?style=plastic)](https://travis-ci.com/github/floor9design-ltd/laravel-restful-api)
 [![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/laravel-restful-api?style=plastic)](https://codecov.io/gh/floor9design-ltd/laravel-restful-api)
 
 [![Github Downloads](https://img.shields.io/github/downloads/floor9design-ltd/laravel-restful-api/total?style=plastic)](https://github.com/floor9design-ltd/laravel-restful-api)
@@ -80,4 +80,4 @@ A changelog is generated here:
 
 This software is available under the MIT licence. 
 
-* [License File](LICENSE.md)
+* [License File](LICENCE.md)
